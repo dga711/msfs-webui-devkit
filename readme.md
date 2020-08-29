@@ -7,6 +7,7 @@ The goal is to make the process of developing UIs in MSFS as painless as possibl
 ## Features
 * Hotreload HTML/CSS/JS changes without restarting the sim or flight
 * View console.log output in the game
+* Action buttons
 * _[TODO] Devtool like debugging UI_
 * _[TODO] Configurable Livereload_
 * _[TODO] Load content from local webserver_
@@ -46,6 +47,11 @@ Press "X" to show the console output.
 
 ### Part 3: Console Logging
 In the JS corresponding to the activated panel, any `console.log()` output should show up in the console panel in game.
+
+### Part 4: Action Buttons
+```g_modDebugMgr.AddDebugButton("InsertTitleHere", function() {dosomething});```
+This will show a button in the open debug UI which executes the function when clicked.
+
 
 ## Known Limitations
 
