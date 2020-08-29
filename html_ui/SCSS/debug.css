@@ -1,0 +1,73 @@
+@font-face {
+    font-family: "Consolas";
+    src: url("/Fonts/consola.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+#DebugPanel {
+    background-color: cornflowerblue;
+    /* display: inline-flex; */
+    opacity: 0.8;
+    width:  40%;
+    min-height: 32px;
+    height:auto;
+    font-size: 14px;
+}
+
+/* body{ background-color: blue;}
+#Mainframe{ background-color: red;}
+#Electricity { background-color: green;}
+#Electricity>div { background-color: yellow;} */
+
+/* #DebugPanel2 {
+    background-color: cornflowerblue;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    z-index: 10000;
+    height: auto;
+    min-height: 120px;
+    width: 450px;
+    margin:0;
+    padding:0;
+}
+
+#DebugPanel .debugButton {
+    background-color: lightgray;
+    color: black;
+    display: block;
+    margin: 10px;
+    height: 20px;
+}
+
+#debugContainer
+{
+    min-height: 100px;
+    height: auto;
+    width: 100%;
+} */
+
+.Console {
+    font-size: 13px;
+    font-family: "Consolas";
+    min-height: 50px;
+}
+
+.debugButton {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    padding: 2px;
+}
+
+#debugHeader {
+    background-color: cornflowerblue;
+    vertical-align: center;
+    padding: 2px;
+}
+
+#debugHeader button {
+    width: 20px;
+    margin: 2px;
+}
