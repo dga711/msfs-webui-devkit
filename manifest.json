@@ -6,9 +6,9 @@
     }
   ],
   "content_type": "CORE",
-  "title": "hotreload",
+  "title": "webui devkit",
   "manufacturer": "",
-  "creator": "reloading fix",
+  "creator": "dga711",
   "package_version": "0.1.39",
   "minimum_game_version": "1.7.12",
   "release_notes": {

@@ -1,3 +1,7 @@
+/*! *****************************************************************************
+    Author: dga711  in 2020
+***************************************************************************** */
+
 @font-face {
     font-family: "Consolas";
     src: url("/Fonts/consola.ttf") format("truetype");
@@ -7,51 +11,30 @@
 
 #DebugPanel {
     background-color: cornflowerblue;
-    /* display: inline-flex; */
     opacity: 0.8;
-    width:  40%;
+    width: 40%;
     min-height: 32px;
-    height:auto;
+    height: auto;
     font-size: 14px;
 }
 
-/* body{ background-color: blue;}
-#Mainframe{ background-color: red;}
-#Electricity { background-color: green;}
-#Electricity>div { background-color: yellow;} */
-
-/* #DebugPanel2 {
-    background-color: cornflowerblue;
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    z-index: 10000;
-    height: auto;
-    min-height: 120px;
-    width: 450px;
-    margin:0;
-    padding:0;
+#DebugPanel.collapsed {
+    width: 100px;
+    opacity: 0.3;
 }
-
-#DebugPanel .debugButton {
-    background-color: lightgray;
-    color: black;
-    display: block;
-    margin: 10px;
-    height: 20px;
-}
-
-#debugContainer
-{
-    min-height: 100px;
-    height: auto;
-    width: 100%;
-} */
 
 .Console {
     font-size: 13px;
     font-family: "Consolas";
     min-height: 50px;
+    padding: 4px;
+    margin:4px;
+    width: 98%;
+    overflow: auto;
+}
+
+#debugContent.collapsed {
+    display: none;
 }
 
 .debugButton {

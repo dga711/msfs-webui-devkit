@@ -1,11 +1,21 @@
-﻿bLiveReload = true;
+﻿/*! *****************************************************************************
+    Author: dga711  in 2020
+
+    Credits: Code is inspired by mechanisms and code found in Asobo's MSFS2020
+***************************************************************************** */
+
+// ENABLED/DISABLE Debug here
+const DEBUG_ENABLED = true;
+
+// ! don't touch these !
+bLiveReload = true;
 bAutoReloadCSS = true;
 bDebugListeners = true;
 
 // Credits: some of this code and concepts is Asobo's and is modified by me
 class ModDebugMgr {
     constructor() {
-        this.m_defaultPosRight = 1;
+        this.m_defaultPosRight = 4;
         this.m_defaultPosTop = 4;
         this.m_defaultLog = null;
         this.m_defaultWarn = null;
@@ -33,6 +43,7 @@ class ModDebugMgr {
     }
 
     AddCustomCss() {
+        // TODO: not sure if necessary
         var css = document.getElementById("debugcss");
         if (!css) {
             var head = document.getElementsByTagName('head')[0];
@@ -67,7 +78,8 @@ class ModDebugMgr {
         this.m_debugPanel = document.createElement("div");
         this.m_debugPanel.id = "DebugPanel";
         this.m_debugPanel.classList.add("debugPanel");
-        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <div style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='toggleDbg'>X</button></div></div><div id='debugContent'></div>";    
+        // TODO this could be nicer
+        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <div style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='toggleDbg'>X</button></div></div><div id='debugContent'></div>";
 
         document.body.appendChild(this.m_debugPanel);
         this.setDefaultPos(this.m_defaultPosRight, this.m_defaultPosTop);
@@ -79,27 +91,11 @@ class ModDebugMgr {
         document.getElementById("rfrsh").addEventListener("click", function () { window.location.reload(true); });
         this.TogglePanel();
     }
-    
-    setDefaultPos(right, top) {
-        this.m_defaultPosRight = right;
-        this.m_defaultPosTop = top;
-        if (this.m_debugPanel) {
-            this.m_debugPanel.style.top = this.m_defaultPosTop + "%";
-            this.m_debugPanel.style.right = this.m_defaultPosRight + "%";
-        }
-    }
 
     TogglePanel() {
         let panel = document.getElementById("debugContent");
-        if (panel.style.display !== 'none') {
-            panel.style.display = "none";
-            document.getElementById("DebugPanel").style.width = "100px";
-            document.getElementById("DebugPanel").style.opacity = "0.3";
-        } else {
-            panel.style.display = "block";
-            document.getElementById("DebugPanel").style.width = "40%";
-            document.getElementById("DebugPanel").style.opacity = "0.8";
-        }
+        panel.classList.toggle("collapsed");
+        document.getElementById("DebugPanel").classList.toggle("collapsed");
     }
 
     UpdateConsole() {
@@ -150,6 +146,17 @@ class ModDebugMgr {
             node.scrollIntoView();
         }
     }
-}
-var g_modDebugMgr = new ModDebugMgr;
 
+    setDefaultPos(right, top) {
+        this.m_defaultPosRight = right;
+        this.m_defaultPosTop = top;
+        if (this.m_debugPanel) {
+            this.m_debugPanel.style.top = this.m_defaultPosTop + "%";
+            this.m_debugPanel.style.right = this.m_defaultPosRight + "%";
+        }
+    }
+}
+var g_modDebugMgr;
+if (DEBUG_ENABLED) {
+    g_modDebugMgr = new ModDebugMgr;
+}
