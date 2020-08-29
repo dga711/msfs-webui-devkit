@@ -45,7 +45,7 @@ Press "X" to show the console output.
 **Important**: To be able to click on it on cockpit panels you have to bind the "New UI Window Mode" key. Then press that key and click on a glass panel. It will pop out in a window.
 
 ### Part 3: Console Logging
-In the JS corresponding to the activated panel, any _console.log()_ output should show up in the console panel in game.
+In the JS corresponding to the activated panel, any `console.log()` output should show up in the console panel in game.
 
 ## Known Limitations
 
