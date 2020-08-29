@@ -25,7 +25,7 @@ The goal is to make the process of developing UIs in MSFS as painless as possibl
 
 ### Part 1: The code
 
-To show the debugging UI in the panel/mfd of your choice you should put this code into the corresponding JS file (_init()_ method works well)
+To show the debugging UI in the panel/mfd of your choice you should put this code into the corresponding JS file (_init()_ or end of _connectedcallback()_ method works well)
 ```        
 if (g_modDebugMgr) {
     g_modDebugMgr.AddConsole(null);
