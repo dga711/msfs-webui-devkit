@@ -63,5 +63,9 @@ This will show a button in the open debug UI which executes the function when cl
 ## Contributing
 Pull requests and further information on the insides are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
+## Contributors ✨
+
+TODO
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
