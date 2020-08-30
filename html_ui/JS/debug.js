@@ -21,6 +21,13 @@ class ModDebugMgr {
         this.m_defaultWarn = null;
         this.m_defaultError = null;
     }
+
+    ReloadPage() {
+        var url = [location.protocol, '//', location.host, location.pathname].join('');
+        let versionNum = Math.random() * 10000000;
+        location.href = url + "?vs=" + Math.round(versionNum); 
+      } 
+
     AddDebugButton(text, callback, autoStart = false) {
         if (this.m_debugPanel == null) {
             document.addEventListener("DebugPanelCreated", this.AddDebugButton.bind(this, text, callback, autoStart));
@@ -88,7 +95,8 @@ class ModDebugMgr {
 
         // bind toggle button
         document.getElementById("toggleDbg").addEventListener("click", this.TogglePanel);
-        document.getElementById("rfrsh").addEventListener("click", function () { window.location.reload(true); });
+        document.getElementById("rfrsh").addEventListener("click", function () { window.document.location.reload(true); });
+        // document.getElementById("rfrsh").addEventListener("click", this.ReloadPage);
         this.TogglePanel();
         // Window DragHandler 
         this.dragHandler = new DragHandler(this.m_debugPanel, "debugHeader")
