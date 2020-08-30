@@ -58,7 +58,8 @@ This will show a button in the open debug UI which executes the function when cl
 ## Known Limitations
 
 * On some FMC screens it might break the page layout and the content shifts UP for a few pixels. While not nice, its ok for development.
-* Sometimes seems to fail refresh of sources no matter what you do.
+* Sometimes seems to fail refresh of sources no matter what you do.   
+HTML/CSS usually always refreshes. When it fails for JS for you, a workaround would be to add a querystring to the import in the HTML file of the panel to bust the cache. Ofc I will work on ways to make this obsolete.
 
 ## Contributing
 Pull requests and further information on the insides are welcome. For major changes, please open an issue first to discuss what you would like to change.
