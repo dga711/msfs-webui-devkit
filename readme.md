@@ -63,5 +63,21 @@ This will show a button in the open debug UI which executes the function when cl
 ## Contributing
 Pull requests and further information on the insides are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
+## Contributors ✨
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/dga711"><img src="https://avatars0.githubusercontent.com/u/2995606?v=4" width="100px;" alt=""/><br /><sub><b>dga711</b></sub></a><br /><a href="#ideas-naorunaoru" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/dga711/msfs-webui-devkit/commits?author=dga711" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Smirow"><img src="https://avatars1.githubusercontent.com/u/16503412?v=4" width="100px;" alt=""/><br /><sub><b>Smirow</b></sub></a><br /><a href="https://github.com/dga711/msfs-webui-devkit/issues?q=is%3Aissue+author%3ASmirow" title="Bug reports">🐛</a> <a href="https://github.com/dga711/msfs-webui-devkit/commits?author=Smirow" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
