@@ -33,6 +33,8 @@ if (g_modDebugMgr) {
 ```
 With the undefined-check in place you don't have to worry it will crash on people who don't have the DevKit in their installation.
 
+**Note**: It does matter where you put the initialization. Mostly dependent on inheritance of the classes. So maybe you have to try to find the right spot for your init code.
+
 **Tip**: To show the UI on all screens on all planes, put the code in the _connectedCallback()_ method of the _NavSystem_ class in the _NavSystems.js_
 
 ### Part 2: The ingame UI
