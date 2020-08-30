@@ -79,23 +79,29 @@ class ModDebugMgr {
         this.m_debugPanel.id = "DebugPanel";
         this.m_debugPanel.classList.add("debugPanel");
         // TODO this could be nicer
-        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <div style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='toggleDbg'>X</button></div></div><div id='debugContent'></div>";
+        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <div style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='toggleDbg'>-</button></div></div><div id='debugContent'></div>";
 
         document.body.appendChild(this.m_debugPanel);
         this.setDefaultPos(this.m_defaultPosRight, this.m_defaultPosTop);
-        this.dragDropHandler = new DragDropHandler(this.m_debugPanel);
+        // this.dragDropHandler = new DragDropHandler(document.getElementById("DebugPanel"));
         document.dispatchEvent(new Event("DebugPanelCreated"));
 
         // bind toggle button
         document.getElementById("toggleDbg").addEventListener("click", this.TogglePanel);
         document.getElementById("rfrsh").addEventListener("click", function () { window.location.reload(true); });
         this.TogglePanel();
+        // Window DragHandler 
+        this.dragHandler = new DragHandler(this.m_debugPanel, "debugHeader")
     }
 
     TogglePanel() {
         let panel = document.getElementById("debugContent");
         panel.classList.toggle("collapsed");
         document.getElementById("DebugPanel").classList.toggle("collapsed");
+        if (panel.classList.contains("collapsed")) 
+            document.getElementById("toggleDbg").innerHTML = "X";
+        else
+            document.getElementById("toggleDbg").innerHTML = "-";
     }
 
     UpdateConsole() {
@@ -155,8 +161,48 @@ class ModDebugMgr {
             this.m_debugPanel.style.right = this.m_defaultPosRight + "%";
         }
     }
+    
 }
 var g_modDebugMgr;
 if (DEBUG_ENABLED) {
     g_modDebugMgr = new ModDebugMgr;
 }
+
+class DragHandler {
+    constructor(element, masterChildId) {
+        this.element = element;
+        this.pos = [0, 0];
+        if (masterChildId && this.element.querySelector('#' + masterChildId)) {
+            this.element.onmousedown = this.onMouseDown.bind(this);
+          } else {
+            this.element.onmousedown = this.onMouseDown.bind(this);
+          }
+    }
+
+    onMouseDown(event) {
+        event.preventDefault();
+        this.pos[0] = event.clientX;
+        this.pos[1] = event.clientY;
+        this.element.parentElement.onmouseup = this.onMouseUp.bind(this);
+    }
+
+    onMouseUp(event) {
+        event.preventDefault(); 
+        this.pos[0] = this.pos[0] - event.clientX;
+        this.pos[1] = this.pos[1] - event.clientY;
+        
+        let offsetRight = this.element.parentElement.offsetWidth - this.element.offsetLeft - this.element.offsetWidth
+        if (this.element.offsetTop - this.pos[1] + this.element.offsetHeight > this.element.parentElement.offsetHeight) 
+            this.element.style.top = (this.element.parentElement.offsetHeight - this.element.offsetHeight) + "px";
+        else
+            this.element.style.top = (this.element.offsetTop - this.pos[1]) + "px";
+        this.element.style.right = (offsetRight + this.pos[0]) + "px";
+
+        this.stopListening();
+    }
+
+    stopListening() {
+        this.element.parentElement.onmouseup = null;
+    }
+}   
+
