@@ -25,8 +25,8 @@ class ModDebugMgr {
     ReloadPage() {
         var url = [location.protocol, '//', location.host, location.pathname].join('');
         let versionNum = Math.random() * 10000000;
-        location.href = url + "?vs=" + Math.round(versionNum); 
-      } 
+        location.href = url + "?vs=" + Math.round(versionNum);
+    }
 
     AddDebugButton(text, callback, autoStart = false) {
         if (this.m_debugPanel == null) {
@@ -106,7 +106,7 @@ class ModDebugMgr {
         let panel = document.getElementById("debugContent");
         panel.classList.toggle("collapsed");
         document.getElementById("DebugPanel").classList.toggle("collapsed");
-        if (panel.classList.contains("collapsed")) 
+        if (panel.classList.contains("collapsed"))
             document.getElementById("toggleDbg").innerHTML = "X";
         else
             document.getElementById("toggleDbg").innerHTML = "-";
@@ -151,7 +151,7 @@ class ModDebugMgr {
         this.logConsole("error", ...arguments);
     }
     logConsole(style, ...rest) {
-        if(style === "error" && document.getElementById("DebugPanel").classList.contains("collapsed")){
+        if (style === "error" && document.getElementById("DebugPanel").classList.contains("collapsed")) {
             this.TogglePanel();
         }
 
@@ -173,7 +173,7 @@ class ModDebugMgr {
             this.m_debugPanel.style.right = this.m_defaultPosRight + "%";
         }
     }
-    
+
 }
 var g_modDebugMgr;
 if (DEBUG_ENABLED) {
@@ -184,11 +184,10 @@ class DragHandler {
     constructor(element, masterChildId) {
         this.element = element;
         this.pos = [0, 0];
-        if (masterChildId && this.element.querySelector('#' + masterChildId)) {
-            this.element.onmousedown = this.onMouseDown.bind(this);
-          } else {
-            this.element.onmousedown = this.onMouseDown.bind(this);
-          }
+        let dragElem = document.getElementById(masterChildId);
+        if (dragElem) {
+            dragElem.onmousedown = this.onMouseDown.bind(this);
+        }
     }
 
     onMouseDown(event) {
@@ -199,12 +198,12 @@ class DragHandler {
     }
 
     onMouseUp(event) {
-        event.preventDefault(); 
+        event.preventDefault();
         this.pos[0] = this.pos[0] - event.clientX;
         this.pos[1] = this.pos[1] - event.clientY;
-        
+
         let offsetRight = this.element.parentElement.offsetWidth - this.element.offsetLeft - this.element.offsetWidth
-        if (this.element.offsetTop - this.pos[1] + this.element.offsetHeight > this.element.parentElement.offsetHeight) 
+        if (this.element.offsetTop - this.pos[1] + this.element.offsetHeight > this.element.parentElement.offsetHeight)
             this.element.style.top = (this.element.parentElement.offsetHeight - this.element.offsetHeight) + "px";
         else
             this.element.style.top = (this.element.offsetTop - this.pos[1]) + "px";
@@ -216,5 +215,5 @@ class DragHandler {
     stopListening() {
         this.element.parentElement.onmouseup = null;
     }
-}   
+}
 
