@@ -19,7 +19,7 @@
 }
 
 #DebugPanel.collapsed {
-    width: 100px;
+    width: 105px;
     opacity: 0.3;
 }
 
@@ -46,11 +46,12 @@
 
 #debugHeader {
     background-color: cornflowerblue;
-    vertical-align: center;
-    padding: 2px;
+    vertical-align: middle;
+    height: 16px;
+    padding: 8px;
 }
 
 #debugHeader button {
     width: 20px;
-    margin: 2px;
+    margin-top: -1px
 }
