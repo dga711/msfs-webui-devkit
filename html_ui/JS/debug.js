@@ -151,6 +151,10 @@ class ModDebugMgr {
         this.logConsole("error", ...arguments);
     }
     logConsole(style, ...rest) {
+        if(style === "error" && document.getElementById("DebugPanel").classList.contains("collapsed")){
+            this.TogglePanel();
+        }
+
         var Args = Array.prototype.slice.call(arguments);
         for (var i = 1; i < Args.length; i++) {
             var node = document.createElement("div");
