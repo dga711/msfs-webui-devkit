@@ -100,6 +100,22 @@ class ModDebugMgr {
         this.TogglePanel();
         // Window DragHandler 
         this.dragHandler = new DragHandler(this.m_debugPanel, "debugHeader")
+        // hotkeys
+        this.BindHotKeys();
+    }
+
+    BindHotKeys() {
+        window.document.addEventListener("keydown", function (e) {
+            if (e.altKey && e.which == 82) {
+                // ALT + R
+                window.document.location.reload(true);
+                e.preventDefault();
+            } else if (e.altKey && e.which == 84){
+                // ALT + T
+                g_modDebugMgr.TogglePanel();
+                e.preventDefault();
+            }
+        });
     }
 
     TogglePanel() {
