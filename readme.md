@@ -13,6 +13,10 @@ The goal is to make the process of developing UIs in MSFS as painless as possibl
 * _[TODO] Load content from local webserver_
 * ...
 
+### Hotkeys
+* ALT + T = Open/Close Panel
+* ALT + R = Reload page
+
 <img src="https://i.imgur.com/9P2kHUF.png" width="250" style="margin-left:30px">&nbsp;&nbsp;&nbsp;<img src="https://i.imgur.com/V2Dl6bs.png" width="250" style="margin-left:30px"></img>
 
 ## Installation
