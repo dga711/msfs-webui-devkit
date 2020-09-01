@@ -10,7 +10,6 @@ The goal is to make the process of developing UIs in MSFS as painless as possibl
 * Action buttons
 * _[TODO] Display SimVars/Simplane values_
 * _[TODO] Devtool like debugging UI_
-* _[TODO] Configurable Livereload_
 * _[TODO] Load content from local webserver_
 * ...
 
