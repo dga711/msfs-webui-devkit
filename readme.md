@@ -8,6 +8,7 @@ The goal is to make the process of developing UIs in MSFS as painless as possibl
 * Hotreload HTML/CSS/JS changes without restarting the sim or flight
 * View console.log output in the game
 * Action buttons
+* Panel FPS counter
 * _[TODO] Devtool like debugging UI_ / see [devtools-backend-refurb](https://github.com/dga711/devtools-backend-refurb)
 * _[TODO] Load content from local webserver_
 * ...
