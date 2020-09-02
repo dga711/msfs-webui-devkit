@@ -20,6 +20,10 @@ class ModDebugMgr {
         this.m_defaultLog = null;
         this.m_defaultWarn = null;
         this.m_defaultError = null;
+
+        this._deltaTime = 0;
+        this.frameCount = 0;
+        this._lastTime = 0;
     }
 
     ReloadPage() {
@@ -86,7 +90,7 @@ class ModDebugMgr {
         this.m_debugPanel.id = "DebugPanel";
         this.m_debugPanel.classList.add("debugPanel");
         // TODO this could be nicer
-        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <div style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='toggleDbg'>-</button></div></div><div id='debugContent'></div>";
+        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <span id='deltatime'></span> <div style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='toggleDbg'>-</button></div></div><div id='debugContent'></div>";
 
         document.body.appendChild(this.m_debugPanel);
         this.setDefaultPos(this.m_defaultPosRight, this.m_defaultPosTop);
@@ -102,6 +106,19 @@ class ModDebugMgr {
         this.dragHandler = new DragHandler(this.m_debugPanel, "debugHeader")
         // hotkeys
         this.BindHotKeys();
+
+        // create update loop to show frames
+        let updateLoop = () => {
+            var curTime = performance.now();
+            this._deltaTime = curTime - this._lastTime;
+            this._lastTime = curTime;
+            if ((this.frameCount % 5) == 0) {
+                document.getElementById("deltatime").innerHTML = Math.round(1000/this._deltaTime);
+            }
+            this.frameCount++;
+            requestAnimationFrame(updateLoop);
+        }
+        requestAnimationFrame(updateLoop);
     }
 
     BindHotKeys() {
@@ -110,7 +127,7 @@ class ModDebugMgr {
                 // ALT + R
                 window.document.location.reload(true);
                 e.preventDefault();
-            } else if (e.altKey && e.which == 84){
+            } else if (e.altKey && e.which == 84) {
                 // ALT + T
                 g_modDebugMgr.TogglePanel();
                 e.preventDefault();
