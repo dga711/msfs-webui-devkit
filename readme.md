@@ -9,7 +9,7 @@ The goal is to make the process of developing UIs in MSFS as painless as possibl
 * View console.log output in the game
 * Action buttons
 * _[TODO] Display SimVars/Simplane values_
-* _[TODO] Devtool like debugging UI_
+* _[TODO] Devtool like debugging UI_ / worked on in a seperate repo that i will push soon
 * _[TODO] Load content from local webserver_
 * ...
 
