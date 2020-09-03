@@ -26,12 +26,6 @@ class ModDebugMgr {
         this._lastTime = 0;
     }
 
-    ReloadPage() {
-        var url = [location.protocol, '//', location.host, location.pathname].join('');
-        let versionNum = Math.random() * 10000000;
-        location.href = url + "?vs=" + Math.round(versionNum);
-    }
-
     AddDebugButton(text, callback, autoStart = false) {
         if (this.m_debugPanel == null) {
             document.addEventListener("DebugPanelCreated", this.AddDebugButton.bind(this, text, callback, autoStart));
@@ -113,9 +107,14 @@ class ModDebugMgr {
             this._deltaTime = curTime - this._lastTime;
             this._lastTime = curTime;
             if ((this.frameCount % 5) == 0) {
-                document.getElementById("deltatime").innerHTML = Math.round(1000/this._deltaTime);
+                document.getElementById("deltatime").innerHTML = Math.round(1000 / this._deltaTime);
             }
+
             this.frameCount++;
+            // just to be sure
+            if (this.frameCount > 9999) {
+                this.frameCount = 0;
+            }
             requestAnimationFrame(updateLoop);
         }
         requestAnimationFrame(updateLoop);
@@ -194,6 +193,10 @@ class ModDebugMgr {
             node.innerText = (Args[i]);
             node.classList.add(style);
             this.m_consoleElem.appendChild(node);
+            // "buffer"
+            if (this.m_consoleElem.childElementCount > 100) {
+                this.m_consoleElem.firstChild.remove()
+            }
             node.scrollIntoView();
         }
     }
