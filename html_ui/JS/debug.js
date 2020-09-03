@@ -7,7 +7,7 @@
 // ENABLED/DISABLE Debug here
 const DEBUG_ENABLED = true;
 // CONSOLE Invisible on start (show via hotkey ALT+T)
-const START_INVIS = false;
+const START_INVIS = true;
 // SHOW FPS counter
 const SHOW_FPS = true;
 
@@ -149,7 +149,7 @@ class ModDebugMgr {
             if (e.altKey && e.which == 82) {
                 // ALT + R
                 // somehow it wants a dblclick to really refresh stuff....
-                DblClickReload();
+                g_modDebugMgr.DblClickReload();
                 e.preventDefault();
             } else if (e.altKey && e.which == 84) {
                 // ALT + T
