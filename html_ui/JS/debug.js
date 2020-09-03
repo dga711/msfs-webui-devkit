@@ -6,6 +6,11 @@
 
 // ENABLED/DISABLE Debug here
 const DEBUG_ENABLED = true;
+// CONSOLE Invisible on start (show via hotkey ALT+T)
+const START_INVIS = false;
+// SHOW FPS counter
+const SHOW_FPS = true;
+
 
 // ! don't touch these !
 bLiveReload = true;
@@ -20,7 +25,7 @@ class ModDebugMgr {
         this.m_defaultLog = null;
         this.m_defaultWarn = null;
         this.m_defaultError = null;
-
+        this.m_displayStyle = "none";
         this._deltaTime = 0;
         this.frameCount = 0;
         this._lastTime = 0;
@@ -100,24 +105,31 @@ class ModDebugMgr {
         this.dragHandler = new DragHandler(this.m_debugPanel, "debugHeader")
         // hotkeys
         this.BindHotKeys();
+        // start invis handling
+        if (START_INVIS) {
+            this.m_displayStyle = this.m_debugPanel.style.display;
+            this.m_debugPanel.style.display = "none";
+        }
 
-        // create update loop to show frames
-        let updateLoop = () => {
-            var curTime = performance.now();
-            this._deltaTime = curTime - this._lastTime;
-            this._lastTime = curTime;
-            if ((this.frameCount % 5) == 0) {
-                document.getElementById("deltatime").innerHTML = Math.round(1000 / this._deltaTime);
-            }
+        if (SHOW_FPS) {
+            // create update loop to show frames
+            let updateLoop = () => {
+                var curTime = performance.now();
+                this._deltaTime = curTime - this._lastTime;
+                this._lastTime = curTime;
+                if ((this.frameCount % 5) == 0) {
+                    document.getElementById("deltatime").innerHTML = Math.round(1000 / this._deltaTime);
+                }
 
-            this.frameCount++;
-            // just to be sure
-            if (this.frameCount > 9999) {
-                this.frameCount = 0;
+                this.frameCount++;
+                // just to be sure
+                if (this.frameCount > 9999) {
+                    this.frameCount = 0;
+                }
+                requestAnimationFrame(updateLoop);
             }
             requestAnimationFrame(updateLoop);
         }
-        requestAnimationFrame(updateLoop);
     }
 
     BindHotKeys() {
@@ -128,6 +140,9 @@ class ModDebugMgr {
                 e.preventDefault();
             } else if (e.altKey && e.which == 84) {
                 // ALT + T
+                if (g_modDebugMgr.m_debugPanel.style.display === "none") {
+                    g_modDebugMgr.m_debugPanel.style.display = g_modDebugMgr.m_displayStyle;
+                }
                 g_modDebugMgr.TogglePanel();
                 e.preventDefault();
             }

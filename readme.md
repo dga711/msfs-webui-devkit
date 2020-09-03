@@ -22,7 +22,9 @@ The goal is to make the process of developing UIs in MSFS as painless as possibl
 ## Installation
 
 * Download the latest zip release [here](https://github.com/dga711/msfs-webui-devkit/releases).
-* Extract the "WebUi-Devkit" folder to the _community_ folder in your MSFS installation
+* Extract the "WebUi-Devkit" folder to the _community_ folder in your MSFS installation  
+_or_  
+* Clone the repo into your _community_ folder
 
 
 ## Usage
