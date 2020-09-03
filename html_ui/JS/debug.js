@@ -101,7 +101,7 @@ class ModDebugMgr {
 
         // bind toggle button
         document.getElementById("toggleDbg").addEventListener("click", this.TogglePanel);
-        document.getElementById("rfrsh").addEventListener("click", this.DblClickReload);
+        document.getElementById("rfrsh").addEventListener("click", function () { window.document.location.reload(true); });
         document.getElementById("rfrsh").addEventListener("dblclick", function () { window.document.location.reload(true); });
 
         // collapse panel initially
