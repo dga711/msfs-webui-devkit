@@ -101,8 +101,10 @@ class ModDebugMgr {
 
         // bind toggle button
         document.getElementById("toggleDbg").addEventListener("click", this.TogglePanel);
-        document.getElementById("rfrsh").addEventListener("click", function () { window.document.location.reload(true); });
-        // document.getElementById("rfrsh").addEventListener("click", this.ReloadPage);
+        document.getElementById("rfrsh").addEventListener("click", this.DblClickReload);
+        document.getElementById("rfrsh").addEventListener("dblclick", function () { window.document.location.reload(true); });
+
+        // collapse panel initially
         this.TogglePanel();
         // Window DragHandler 
         this.dragHandler = new DragHandler(this.m_debugPanel, "debugHeader")
@@ -135,11 +137,19 @@ class ModDebugMgr {
         }
     }
 
+    DblClickReload(){
+        var targLink = window.document.getElementById("rfrsh");
+        var clickEvent = document.createEvent('MouseEvents');
+        clickEvent.initEvent('dblclick', true, true);
+        targLink.dispatchEvent(clickEvent);
+    }
+
     BindHotKeys() {
         window.document.addEventListener("keydown", function (e) {
             if (e.altKey && e.which == 82) {
                 // ALT + R
-                window.document.location.reload(true);
+                // somehow it wants a dblclick to really refresh stuff....
+                DblClickReload();
                 e.preventDefault();
             } else if (e.altKey && e.which == 84) {
                 // ALT + T
