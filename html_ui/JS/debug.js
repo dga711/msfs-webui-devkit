@@ -7,7 +7,7 @@
 // ENABLED/DISABLE Debug here
 const DEBUG_ENABLED = true;
 // CONSOLE Invisible on start (show via hotkey ALT+T)
-const START_INVIS = true;
+const START_INVIS = false;
 // SHOW FPS counter
 const SHOW_FPS = true;
 
