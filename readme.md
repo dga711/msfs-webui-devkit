@@ -34,7 +34,7 @@ _or_
 
 To show the debugging UI in the panel/mfd of your choice you should put this code into the corresponding JS file (_init()_ or end of _connectedcallback()_ method works well)
 ```        
-if (g_modDebugMgr) {
+if (typeof g_modDebugMgr != "undefined") {
     g_modDebugMgr.AddConsole(null);
 }
 ```
