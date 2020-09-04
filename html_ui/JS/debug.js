@@ -89,7 +89,7 @@ class ModDebugMgr {
         this.m_debugPanel.id = "DebugPanel";
         this.m_debugPanel.classList.add("debugPanel");
         // TODO this could be nicer
-        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <span id='deltatime'></span> <div style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='toggleDbg'>-</button></div></div><div id='debugContent'></div>";
+        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <span id='deltatime'></span> <div id='debugActions' style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='toggleDbg'>-</button></div></div><div id='debugContent'></div>";
 
         document.body.appendChild(this.m_debugPanel);
         this.setDefaultPos(this.m_defaultPosRight, this.m_defaultPosTop);
