@@ -29,9 +29,6 @@ class ModDebugMgr {
         this._deltaTime = 0;
         this.frameCount = 0;
         this._lastTime = 0;
-
-        // start auto reload of css
-        LiveReload.reloadCSS();
     }
 
     AddDebugButton(text, callback, autoStart = false) {
