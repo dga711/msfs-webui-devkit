@@ -208,7 +208,8 @@ class ModDebugMgr {
         this.logConsole("error", ...arguments);
     }
     logConsole(style, ...rest) {
-        if (style === "error" && document.getElementById("DebugPanel").classList.contains("collapsed")) {
+        var isPanelCollapsed = document.getElementById("DebugPanel").classList.contains("collapsed");
+        if (style === "error" && isPanelCollapsed) {
             this.TogglePanel();
         }
 
@@ -219,10 +220,12 @@ class ModDebugMgr {
             node.classList.add(style);
             this.m_consoleElem.appendChild(node);
             // "buffer"
-            if (this.m_consoleElem.childElementCount > 100) {
+            if (this.m_consoleElem.childElementCount > 150) {
                 this.m_consoleElem.firstChild.remove()
             }
-            node.scrollIntoView();
+            if (!isPanelCollapsed) {
+                this.m_consoleElem.scrollTop = -this.m_consoleElem.scrollHeight;
+            }
         }
     }
 
