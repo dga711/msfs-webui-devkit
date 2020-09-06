@@ -29,6 +29,8 @@ class ModDebugMgr {
         this._deltaTime = 0;
         this.frameCount = 0;
         this._lastTime = 0;
+        this._highlightedNode = null;
+        this._inspectorTooltipNode = null;
     }
 
     AddDebugButton(text, callback, autoStart = false) {
@@ -52,29 +54,6 @@ class ModDebugMgr {
         }
     }
 
-    AddCustomCss() {
-        // TODO: not sure if necessary
-        var css = document.getElementById("debugcss");
-        if (!css) {
-            var head = document.getElementsByTagName('head')[0];
-            var link = document.createElement('link');
-            link.id = "debugcss";
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            let versionNum = Math.random() * 10000000;
-            link.href = '/SCSS/debug.css?version=' + versionNum;
-            link.media = 'all';
-            head.appendChild(link);
-        }
-        else {
-            let url = new URL(css.href);
-            let version = url.searchParams.get("version");
-            let versionNum = Math.random() * 10000000;
-            url.searchParams.set("version", (versionNum).toString());
-            css.href = url.href;
-        }
-    }
-
     CreateDebugPanel() {
         if (this.m_debugPanel != null)
             return;
@@ -83,6 +62,7 @@ class ModDebugMgr {
             return;
         }
         this.AddCustomCss();
+        window.onerror = function (message, source, lineno, colno, error) { g_modDebugMgr.error(message); };
 
         // create panel
         this.m_debugPanel = document.createElement("div");
@@ -99,7 +79,6 @@ class ModDebugMgr {
         // bind toggle button
         document.getElementById("toggleDbg").addEventListener("click", this.TogglePanel);
         document.getElementById("rfrsh").addEventListener("click", function () { window.document.location.reload(true); });
-        document.getElementById("rfrsh").addEventListener("dblclick", function () { window.document.location.reload(true); });
 
         // collapse panel initially
         this.TogglePanel();
@@ -114,31 +93,31 @@ class ModDebugMgr {
         }
 
         if (SHOW_FPS) {
-            // create update loop to show frames
-            let updateLoop = () => {
-                var curTime = performance.now();
-                this._deltaTime = curTime - this._lastTime;
-                this._lastTime = curTime;
-                if ((this.frameCount % 5) == 0) {
-                    document.getElementById("deltatime").innerHTML = Math.round(1000 / this._deltaTime);
-                }
+            this.DisplayFpsLoop();
+        }
 
-                this.frameCount++;
-                // just to be sure
-                if (this.frameCount > 9999) {
-                    this.frameCount = 0;
-                }
-                requestAnimationFrame(updateLoop);
+        // ELEMENT inspector
+        this.ActivateInspector();
+    }
+
+    DisplayFpsLoop() {
+        // create update loop to show frames
+        let updateLoop = () => {
+            var curTime = performance.now();
+            this._deltaTime = curTime - this._lastTime;
+            this._lastTime = curTime;
+            if ((this.frameCount % 5) == 0) {
+                document.getElementById("deltatime").innerHTML = Math.round(1000 / this._deltaTime);
+            }
+
+            this.frameCount++;
+            // just to be sure
+            if (this.frameCount > 9999) {
+                this.frameCount = 0;
             }
             requestAnimationFrame(updateLoop);
         }
-    }
-
-    DblClickReload(){
-        var targLink = window.document.getElementById("rfrsh");
-        var clickEvent = document.createEvent('MouseEvents');
-        clickEvent.initEvent('dblclick', true, true);
-        targLink.dispatchEvent(clickEvent);
+        requestAnimationFrame(updateLoop);
     }
 
     BindHotKeys() {
@@ -146,7 +125,7 @@ class ModDebugMgr {
             if (e.altKey && e.which == 82) {
                 // ALT + R
                 // somehow it wants a dblclick to really refresh stuff....
-                g_modDebugMgr.DblClickReload();
+                document.getElementById("rfrsh").click();
                 e.preventDefault();
             } else if (e.altKey && e.which == 84) {
                 // ALT + T
@@ -236,6 +215,73 @@ class ModDebugMgr {
             this.m_debugPanel.style.top = this.m_defaultPosTop + "%";
             this.m_debugPanel.style.right = this.m_defaultPosRight + "%";
         }
+    }
+
+    AddCustomCss() {
+        // TODO: not sure if necessary
+        var css = document.getElementById("debugcss");
+        if (!css) {
+            var head = document.getElementsByTagName('head')[0];
+            var link = document.createElement('link');
+            link.id = "debugcss";
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            let versionNum = Math.random() * 10000000;
+            link.href = '/SCSS/debug.css?version=' + versionNum;
+            link.media = 'all';
+            head.appendChild(link);
+        }
+        else {
+            let url = new URL(css.href);
+            let version = url.searchParams.get("version");
+            let versionNum = Math.random() * 10000000;
+            url.searchParams.set("version", (versionNum).toString());
+            css.href = url.href;
+        }
+    }
+
+    ActivateInspector() {
+        document.addEventListener("mouseover", function (ev) {
+            if (this._highlightedNode != null) {
+                this._highlightedNode.classList.remove("inspector-highlight");
+            }
+            if (this._inspectorTooltipNode != null) {
+                this._inspectorTooltipNode.remove();
+            }
+
+            if (ev.target == this._highlightedNode) return;
+            if (document.getElementById("DebugPanel").contains(ev.target)) return;
+
+            ev.target.classList.add("inspector-highlight");
+            this._highlightedNode = ev.target;
+
+            this._inspectorTooltipNode = document.createElement("div");
+            this._inspectorTooltipNode.classList.add("inspector-tooltip");
+            this._inspectorTooltipNode.innerHTML = `ID: <i>${ev.target.id}</i><br/>`;
+            this._inspectorTooltipNode.innerHTML += `class: <i>${ev.target.className}</i><br/>`;
+
+            // get style
+            let elStyle = ev.target.style;
+            let computedStyle = window.getComputedStyle(ev.target, null);
+
+            let whiteList = ["width", "height", "color", "background-color", "position", "top", "left", "margin", "padding"];
+            for (let i = whiteList.length; i--;) {
+                let prop = whiteList[i];
+                this._inspectorTooltipNode.innerHTML += "  " + prop + " = '<i>" + computedStyle[prop] + "</i>'<br />";
+            }
+
+            document.body.appendChild(this._inspectorTooltipNode);
+
+            // set pos
+            let bodyhalf = document.body.offsetHeight / 2;
+            let rect = this._highlightedNode.getBoundingClientRect();
+            let offset = this._highlightedNode.offsetHeight + 6;
+            if (rect.top > bodyhalf) {
+                offset = -(this._inspectorTooltipNode.offsetHeight) - 6;
+            }
+            this._inspectorTooltipNode.style.top = (rect.top + offset) + "px";
+            this._inspectorTooltipNode.style.left = rect.left + "px";
+        });
     }
 
 }

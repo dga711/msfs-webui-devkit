@@ -28,7 +28,7 @@
     font-family: "Consolas";
     min-height: 50px;
     padding: 4px;
-    margin:4px;
+    margin: 4px;
     width: 98%;
     overflow: auto;
 }
@@ -51,12 +51,26 @@
     padding: 8px;
 }
 
-#debugActions
-{
+#debugActions {
     margin-left: 10px;
 }
 
 #debugHeader button {
     width: 20px;
     margin-top: -1px;
+}
+
+.inspector-highlight {
+    border: solid 2px pink;
+}
+
+.inspector-tooltip {
+    position: absolute;
+    display: block;
+    background-color: pink;
+    color: black;
+    z-index: 120000;
+    pointer-events: none;
+    font-size: 14px;
+    padding: 8px;
 }
