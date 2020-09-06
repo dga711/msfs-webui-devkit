@@ -8,6 +8,7 @@ The goal is to make the process of developing UIs in MSFS as painless as possibl
 * Hotreload HTML/CSS/JS changes without restarting the sim or flight
 * View console.log output in the game
 * Action buttons
+* Basic HTML inspector (click on element)
 * Panel FPS counter (configurable)
 * _[TODO] Devtool like debugging UI_ / see [devtools-backend-refurb](https://github.com/dga711/devtools-backend-refurb)
 * _[TODO] Load content from local webserver_
@@ -51,7 +52,7 @@ In game, on any panel where you activated the code, it should show an opaque UI 
 Press on the "R" button to refresh the HTML Content of the panel.  
 Press "X" to show the console output.
 
-**Important**: To be able to click on it on cockpit panels you have to bind the "New UI Window Mode" key. Then press that key and click on a glass panel. It will pop out in a window.
+**Important**: To be able to click on it on cockpit panels you have to bind the "New UI Window Mode" key in MsFs. Then press that key and click on a glass panel. It will pop out in a window.
 
 ### Part 3: Console Logging
 In the JS corresponding to the activated panel, any `console.log()` output should show up in the console panel in game.
