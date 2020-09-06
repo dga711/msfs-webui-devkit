@@ -77,7 +77,7 @@ class ModDebugMgr {
         // bind toggle button
         document.getElementById("toggleDbg").addEventListener("click", this.TogglePanel);
         document.getElementById("rfrsh").addEventListener("click", function () {
-            if (this.m_canReload) {
+            if (g_modDebugMgr.m_canReload) {
                 window.document.location.reload(true);
                 clearTimeout(this.m_liveReloadTimer);
             }
@@ -102,12 +102,16 @@ class ModDebugMgr {
         // ELEMENT inspector
         this.ActivateInspector();
 
-        // css livereload (wait 5secs cause of weird lifecycle)
-        this.m_liveReloadTimer = setTimeout(this.LiveReloadCSS, 5000);
-
-        window.onbeforeunload = function (event) {          
+        window.addEventListener('beforeunload', function (e) {
+            this.m_canReload = false;
             clearTimeout(this.m_liveReloadTimer);
-        };
+            delete e['returnValue'];
+          });
+
+        window.addEventListener('load', (event) => {
+            // css livereload (wait cause of weird lifecycle)
+            //this.m_liveReloadTimer = setTimeout(this.LiveReloadCSS, 2000);
+        });
 
         this.m_canReload = true;
     }
