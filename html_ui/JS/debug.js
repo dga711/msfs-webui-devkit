@@ -11,7 +11,6 @@ const START_INVIS = false;
 // SHOW FPS counter
 const SHOW_FPS = true;
 
-
 // ! don't touch these !
 bLiveReload = true;
 bAutoReloadCSS = true;
@@ -26,9 +25,6 @@ class ModDebugMgr {
         this.m_defaultWarn = null;
         this.m_defaultError = null;
         this.m_displayStyle = "none";
-        this._deltaTime = 0;
-        this.frameCount = 0;
-        this._lastTime = 0;
         this._highlightedNode = null;
         this._inspectorTooltipNode = null;
     }
@@ -103,18 +99,8 @@ class ModDebugMgr {
     DisplayFpsLoop() {
         // create update loop to show frames
         let updateLoop = () => {
-            var curTime = performance.now();
-            this._deltaTime = curTime - this._lastTime;
-            this._lastTime = curTime;
-            if ((this.frameCount % 5) == 0) {
-                document.getElementById("deltatime").innerHTML = Math.round(1000 / this._deltaTime);
-            }
-
-            this.frameCount++;
-            // just to be sure
-            if (this.frameCount > 9999) {
-                this.frameCount = 0;
-            }
+            let fpsValue = fps.tick();
+            document.getElementById("deltatime").innerHTML = fpsValue;
             requestAnimationFrame(updateLoop);
         }
         requestAnimationFrame(updateLoop);
@@ -241,16 +227,16 @@ class ModDebugMgr {
     }
 
     ActivateInspector() {
-        document.addEventListener("DOMNodeRemoved", function(ev){
-            if(ev.target == this._highlightedNode){
+        document.addEventListener("DOMNodeRemoved", function (ev) {
+            if (ev.target == this._highlightedNode) {
                 if (this._highlightedNode != null) {
                     this._highlightedNode.classList.remove("inspector-highlight");
-                    this._highlightedNode == null;
+                    this._highlightedNode = null;
                 }
                 if (this._inspectorTooltipNode != null) {
                     this._inspectorTooltipNode.remove();
-                }  
-            }        
+                }
+            }
         });
 
         document.addEventListener("mouseover", function (ev) {
@@ -336,6 +322,44 @@ class DragHandler {
 
     stopListening() {
         this.element.parentElement.onmouseup = null;
+    }
+}
+
+// Credit: https://stackoverflow.com/a/55644176/1836338
+const fps = {
+    sampleSize: 60,
+    value: 0,
+    _sample_: [],
+    _index_: 0,
+    _lastTick_: false,
+    tick: function () {
+        // if is first tick, just set tick timestamp and return
+        if (!this._lastTick_) {
+            this._lastTick_ = performance.now();
+            return 0;
+        }
+        // calculate necessary values to obtain current tick FPS
+        let now = performance.now();
+        let delta = (now - this._lastTick_) / 1000;
+        let fps = 1 / delta;
+        // add to fps samples, current tick fps value 
+        this._sample_[this._index_] = Math.round(fps);
+
+        // iterate samples to obtain the average
+        let average = 0;
+        for (i = 0; i < this._sample_.length; i++) average += this._sample_[i];
+
+        average = Math.round(average / this._sample_.length);
+
+        // set new FPS
+        this.value = average;
+        // store current timestamp
+        this._lastTick_ = now;
+        // increase sample index counter, and reset it
+        // to 0 if exceded maximum sampleSize limit
+        this._index_++;
+        if (this._index_ === this.sampleSize) this._index_ = 0;
+        return this.value;
     }
 }
 
