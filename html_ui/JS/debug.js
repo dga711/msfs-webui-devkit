@@ -239,7 +239,8 @@ class ModDebugMgr {
             }
         });
 
-        document.addEventListener("mouseover", function (ev) {
+        document.addEventListener("click", function (ev) {
+            let highlightClicked = ev.target.classList.contains("inspector-highlight");
             if (this._highlightedNode != null) {
                 this._highlightedNode.classList.remove("inspector-highlight");
                 this._highlightedNode = null;
@@ -248,6 +249,7 @@ class ModDebugMgr {
                 this._inspectorTooltipNode.remove();
             }
 
+            if(highlightClicked) return;
             if (document.getElementById("DebugPanel").contains(ev.target)) return;
 
             this._highlightedNode = ev.target;
@@ -279,6 +281,8 @@ class ModDebugMgr {
             }
             this._inspectorTooltipNode.style.top = (rect.top + offset) + "px";
             this._inspectorTooltipNode.style.left = Math.max(0, rect.left) + "px";
+
+            ev.preventDefault();
         });
     }
 
