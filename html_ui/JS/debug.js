@@ -241,28 +241,40 @@ class ModDebugMgr {
     }
 
     ActivateInspector() {
+        document.addEventListener("DOMNodeRemoved", function(ev){
+            if(ev.target == this._highlightedNode){
+                if (this._highlightedNode != null) {
+                    this._highlightedNode.classList.remove("inspector-highlight");
+                    this._highlightedNode == null;
+                }
+                if (this._inspectorTooltipNode != null) {
+                    this._inspectorTooltipNode.remove();
+                }  
+            }        
+        });
+
         document.addEventListener("mouseover", function (ev) {
             if (this._highlightedNode != null) {
                 this._highlightedNode.classList.remove("inspector-highlight");
+                this._highlightedNode = null;
             }
             if (this._inspectorTooltipNode != null) {
                 this._inspectorTooltipNode.remove();
             }
 
-            if (ev.target == this._highlightedNode) return;
             if (document.getElementById("DebugPanel").contains(ev.target)) return;
 
-            ev.target.classList.add("inspector-highlight");
             this._highlightedNode = ev.target;
+            this._highlightedNode.classList.add("inspector-highlight");
 
             this._inspectorTooltipNode = document.createElement("div");
             this._inspectorTooltipNode.classList.add("inspector-tooltip");
-            this._inspectorTooltipNode.innerHTML = `ID: <i>${ev.target.id}</i><br/>`;
-            this._inspectorTooltipNode.innerHTML += `class: <i>${ev.target.className}</i><br/>`;
+            this._inspectorTooltipNode.innerHTML = `ID: <i>${this._highlightedNode.id}</i><br/>`;
+            this._inspectorTooltipNode.innerHTML += `class: <i>${this._highlightedNode.className}</i><br/>`;
 
             // get style
             let elStyle = ev.target.style;
-            let computedStyle = window.getComputedStyle(ev.target, null);
+            let computedStyle = window.getComputedStyle(this._highlightedNode, null);
 
             let whiteList = ["width", "height", "color", "background-color", "position", "top", "left", "margin", "padding"];
             for (let i = whiteList.length; i--;) {
