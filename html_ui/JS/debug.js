@@ -28,6 +28,7 @@ class ModDebugMgr {
         this.m_highlightedNode = null;
         this.m_inspectorTooltipNode = null;
         this.m_liveReloadTimer = null;
+        this.m_canReload = false;
     }
 
     AddDebugButton(text, callback, autoStart = false) {
@@ -76,8 +77,10 @@ class ModDebugMgr {
         // bind toggle button
         document.getElementById("toggleDbg").addEventListener("click", this.TogglePanel);
         document.getElementById("rfrsh").addEventListener("click", function () {
-            window.document.location.reload(true);
-            clearTimeout(this.m_liveReloadTimer)
+            if (this.m_canReload) {
+                window.document.location.reload(true);
+                clearTimeout(this.m_liveReloadTimer);
+            }
         });
 
         // collapse panel initially
@@ -102,9 +105,11 @@ class ModDebugMgr {
         // css livereload (wait 5secs cause of weird lifecycle)
         this.m_liveReloadTimer = setTimeout(this.LiveReloadCSS, 5000);
 
-        window.onbeforeunload = function(event) {
-            clearTimeout(this.m_liveReloadTimer);            
+        window.onbeforeunload = function (event) {          
+            clearTimeout(this.m_liveReloadTimer);
         };
+
+        this.m_canReload = true;
     }
 
     DisplayFpsLoop() {
@@ -118,8 +123,10 @@ class ModDebugMgr {
     }
 
     LiveReloadCSS() {
+        this.m_canReload = false;
         LiveReload.reloadCSS();
         this.m_liveReloadTimer = setTimeout(g_modDebugMgr.LiveReloadCSS, 3000);
+        this.m_canReload = true;
     }
 
     BindHotKeys() {
