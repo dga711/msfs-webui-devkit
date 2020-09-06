@@ -25,8 +25,9 @@ class ModDebugMgr {
         this.m_defaultWarn = null;
         this.m_defaultError = null;
         this.m_displayStyle = "none";
-        this._highlightedNode = null;
-        this._inspectorTooltipNode = null;
+        this.m_highlightedNode = null;
+        this.m_inspectorTooltipNode = null;
+        this.m_liveReloadTimer = null;
     }
 
     AddDebugButton(text, callback, autoStart = false) {
@@ -74,7 +75,10 @@ class ModDebugMgr {
 
         // bind toggle button
         document.getElementById("toggleDbg").addEventListener("click", this.TogglePanel);
-        document.getElementById("rfrsh").addEventListener("click", function () { window.document.location.reload(true); });
+        document.getElementById("rfrsh").addEventListener("click", function () {
+            window.document.location.reload(true);
+            clearTimeout(this.m_liveReloadTimer)
+        });
 
         // collapse panel initially
         this.TogglePanel();
@@ -94,6 +98,13 @@ class ModDebugMgr {
 
         // ELEMENT inspector
         this.ActivateInspector();
+
+        // css livereload (wait 5secs cause of weird lifecycle)
+        this.m_liveReloadTimer = setTimeout(this.LiveReloadCSS, 5000);
+
+        window.onbeforeunload = function(event) {
+            clearTimeout(this.m_liveReloadTimer);            
+        };
     }
 
     DisplayFpsLoop() {
@@ -104,6 +115,11 @@ class ModDebugMgr {
             requestAnimationFrame(updateLoop);
         }
         requestAnimationFrame(updateLoop);
+    }
+
+    LiveReloadCSS() {
+        LiveReload.reloadCSS();
+        this.m_liveReloadTimer = setTimeout(g_modDebugMgr.LiveReloadCSS, 3000);
     }
 
     BindHotKeys() {
@@ -228,59 +244,59 @@ class ModDebugMgr {
 
     ActivateInspector() {
         document.addEventListener("DOMNodeRemoved", function (ev) {
-            if (ev.target == this._highlightedNode) {
-                if (this._highlightedNode != null) {
-                    this._highlightedNode.classList.remove("inspector-highlight");
-                    this._highlightedNode = null;
+            if (ev.target == this.m_highlightedNode) {
+                if (this.m_highlightedNode != null) {
+                    this.m_highlightedNode.classList.remove("inspector-highlight");
+                    this.m_highlightedNode = null;
                 }
-                if (this._inspectorTooltipNode != null) {
-                    this._inspectorTooltipNode.remove();
+                if (this.m_inspectorTooltipNode != null) {
+                    this.m_inspectorTooltipNode.remove();
                 }
             }
         });
 
         document.addEventListener("click", function (ev) {
             let highlightClicked = ev.target.classList.contains("inspector-highlight");
-            if (this._highlightedNode != null) {
-                this._highlightedNode.classList.remove("inspector-highlight");
-                this._highlightedNode = null;
+            if (this.m_highlightedNode != null) {
+                this.m_highlightedNode.classList.remove("inspector-highlight");
+                this.m_highlightedNode = null;
             }
-            if (this._inspectorTooltipNode != null) {
-                this._inspectorTooltipNode.remove();
+            if (this.m_inspectorTooltipNode != null) {
+                this.m_inspectorTooltipNode.remove();
             }
 
-            if(highlightClicked) return;
+            if (highlightClicked) return;
             if (document.getElementById("DebugPanel").contains(ev.target)) return;
 
-            this._highlightedNode = ev.target;
-            this._highlightedNode.classList.add("inspector-highlight");
+            this.m_highlightedNode = ev.target;
+            this.m_highlightedNode.classList.add("inspector-highlight");
 
-            this._inspectorTooltipNode = document.createElement("div");
-            this._inspectorTooltipNode.classList.add("inspector-tooltip");
-            this._inspectorTooltipNode.innerHTML = `ID: <i>${this._highlightedNode.id}</i><br/>`;
-            this._inspectorTooltipNode.innerHTML += `class: <i>${this._highlightedNode.className}</i><br/>`;
+            this.m_inspectorTooltipNode = document.createElement("div");
+            this.m_inspectorTooltipNode.classList.add("inspector-tooltip");
+            this.m_inspectorTooltipNode.innerHTML = `ID: <i>${this.m_highlightedNode.id}</i><br/>`;
+            this.m_inspectorTooltipNode.innerHTML += `class: <i>${this.m_highlightedNode.className}</i><br/>`;
 
             // get style
             let elStyle = ev.target.style;
-            let computedStyle = window.getComputedStyle(this._highlightedNode, null);
+            let computedStyle = window.getComputedStyle(this.m_highlightedNode, null);
 
             let whiteList = ["width", "height", "color", "background-color", "position", "top", "left", "margin", "padding"];
             for (let i = whiteList.length; i--;) {
                 let prop = whiteList[i];
-                this._inspectorTooltipNode.innerHTML += "  " + prop + " = '<i>" + computedStyle[prop] + "</i>'<br />";
+                this.m_inspectorTooltipNode.innerHTML += "  " + prop + " = '<i>" + computedStyle[prop] + "</i>'<br />";
             }
 
-            document.body.appendChild(this._inspectorTooltipNode);
+            document.body.appendChild(this.m_inspectorTooltipNode);
 
             // set pos
             let bodyhalf = document.body.offsetHeight / 2;
-            let rect = this._highlightedNode.getBoundingClientRect();
-            let offset = this._highlightedNode.offsetHeight + 6;
+            let rect = this.m_highlightedNode.getBoundingClientRect();
+            let offset = this.m_highlightedNode.offsetHeight + 6;
             if (rect.top > bodyhalf) {
-                offset = -(this._inspectorTooltipNode.offsetHeight) - 6;
+                offset = -(this.m_inspectorTooltipNode.offsetHeight) - 6;
             }
-            this._inspectorTooltipNode.style.top = (rect.top + offset) + "px";
-            this._inspectorTooltipNode.style.left = Math.max(0, rect.left) + "px";
+            this.m_inspectorTooltipNode.style.top = (rect.top + offset) + "px";
+            this.m_inspectorTooltipNode.style.left = Math.max(0, rect.left) + "px";
 
             ev.preventDefault();
         });
