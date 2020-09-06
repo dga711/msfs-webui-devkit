@@ -278,7 +278,7 @@ class ModDebugMgr {
                 offset = -(this._inspectorTooltipNode.offsetHeight) - 6;
             }
             this._inspectorTooltipNode.style.top = (rect.top + offset) + "px";
-            this._inspectorTooltipNode.style.left = rect.left + "px";
+            this._inspectorTooltipNode.style.left = Math.max(0, rect.left) + "px";
         });
     }
 
