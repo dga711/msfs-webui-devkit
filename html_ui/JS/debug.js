@@ -1,5 +1,6 @@
 ﻿/*! *****************************************************************************
     Author: dga711  in 2020
+    https://github.com/dga711/msfs-webui-devkit
 
     Credits: Code is inspired by mechanisms and code found in Asobo's MSFS2020
 ***************************************************************************** */
@@ -13,7 +14,7 @@ const SHOW_FPS = true;
 
 // ! don't touch these !
 bLiveReload = true;
-bAutoReloadCSS = true;
+bAutoReloadCSS = false;
 bDebugListeners = true;
 
 // Credits: some of this code and concepts is Asobo's and is modified by me
@@ -24,7 +25,6 @@ class ModDebugMgr {
         this.m_defaultLog = null;
         this.m_defaultWarn = null;
         this.m_defaultError = null;
-        this.m_displayStyle = "none";
         this.m_highlightedNode = null;
         this.m_inspectorTooltipNode = null;
         this.m_liveReloadTimer = null;
@@ -75,7 +75,7 @@ class ModDebugMgr {
         document.dispatchEvent(new Event("DebugPanelCreated"));
 
         // bind toggle button
-        document.getElementById("toggleDbg").addEventListener("click", this.TogglePanel);
+        document.getElementById("toggleDbg").addEventListener("click", this.TogglePanelCollapsed);
         document.getElementById("rfrsh").addEventListener("click", function () {
             if (g_modDebugMgr.m_canReload) {
                 window.document.location.reload(true);
@@ -84,15 +84,14 @@ class ModDebugMgr {
         });
 
         // collapse panel initially
-        this.TogglePanel();
+        this.TogglePanelCollapsed();
         // Window DragHandler 
         this.dragHandler = new DragHandler(this.m_debugPanel, "debugHeader")
         // hotkeys
         this.BindHotKeys();
         // start invis handling
         if (START_INVIS) {
-            this.m_displayStyle = this.m_debugPanel.style.display;
-            this.m_debugPanel.style.display = "none";
+            this.TogglePanelVisbility(false);
         }
 
         if (SHOW_FPS) {
@@ -142,16 +141,13 @@ class ModDebugMgr {
                 e.preventDefault();
             } else if (e.altKey && e.which == 84) {
                 // ALT + T
-                if (g_modDebugMgr.m_debugPanel.style.display === "none") {
-                    g_modDebugMgr.m_debugPanel.style.display = g_modDebugMgr.m_displayStyle;
-                }
-                g_modDebugMgr.TogglePanel();
+                g_modDebugMgr.TogglePanelVisbility();
                 e.preventDefault();
             }
         });
     }
 
-    TogglePanel() {
+    TogglePanelCollapsed() {
         let panel = document.getElementById("debugContent");
         panel.classList.toggle("collapsed");
         document.getElementById("DebugPanel").classList.toggle("collapsed");
@@ -159,6 +155,30 @@ class ModDebugMgr {
             document.getElementById("toggleDbg").innerHTML = "X";
         else
             document.getElementById("toggleDbg").innerHTML = "-";
+    }
+
+    IsPanelCollapsed() {
+        return document.getElementById("DebugPanel").classList.contains("collapsed");
+    }
+
+    TogglePanelVisbility(show) {
+        if (typeof show == "undefined") {
+            document.getElementById("DebugPanel").classList.toggle("hidden");
+        } else {
+            if (!show) {
+                document.getElementById("DebugPanel").classList.add("hidden");
+            } else {
+                document.getElementById("DebugPanel").classList.remove("hidden");
+            }
+        }
+
+        if (!this.IsPanelVisible()) {
+            this.ClearInspectorHighlights();
+        }
+    }
+
+    IsPanelVisible() {
+        return !document.getElementById("DebugPanel").classList.contains("hidden");
     }
 
     UpdateConsole() {
@@ -200,9 +220,14 @@ class ModDebugMgr {
         this.logConsole("error", ...arguments);
     }
     logConsole(style, ...rest) {
-        var isPanelCollapsed = document.getElementById("DebugPanel").classList.contains("collapsed");
-        if (style === "error" && isPanelCollapsed) {
-            this.TogglePanel();
+        if (style === "error") {
+            if (!this.IsPanelVisible()) {
+                this.TogglePanelVisbility(true);
+            }
+
+            if (this.IsPanelCollapsed()) {
+                this.TogglePanelCollapsed();
+            }
         }
 
         var Args = Array.prototype.slice.call(arguments);
@@ -215,7 +240,7 @@ class ModDebugMgr {
             if (this.m_consoleElem.childElementCount > 150) {
                 this.m_consoleElem.firstChild.remove()
             }
-            if (!isPanelCollapsed) {
+            if (!this.IsPanelCollapsed()) {
                 this.m_consoleElem.scrollTop = -this.m_consoleElem.scrollHeight;
             }
         }
@@ -253,62 +278,59 @@ class ModDebugMgr {
         }
     }
 
+    ClearInspectorHighlights() {
+        if (g_modDebugMgr.m_highlightedNode != null) {
+            g_modDebugMgr.m_highlightedNode.classList.remove("inspector-highlight");
+            g_modDebugMgr.m_highlightedNode = null;
+        }
+        if (g_modDebugMgr.m_inspectorTooltipNode != null) {
+            g_modDebugMgr.m_inspectorTooltipNode.remove();
+        }
+    }
+
     ActivateInspector() {
         document.addEventListener("DOMNodeRemoved", function (ev) {
-            if (ev.target == this.m_highlightedNode) {
-                if (this.m_highlightedNode != null) {
-                    this.m_highlightedNode.classList.remove("inspector-highlight");
-                    this.m_highlightedNode = null;
-                }
-                if (this.m_inspectorTooltipNode != null) {
-                    this.m_inspectorTooltipNode.remove();
-                }
+            if (ev.target == g_modDebugMgr.m_highlightedNode) {
+                g_modDebugMgr.ClearInspectorHighlights();
             }
         });
 
         document.addEventListener("click", function (ev) {
+            if (!g_modDebugMgr.IsPanelVisible()) return;
             let highlightClicked = ev.target.classList.contains("inspector-highlight");
-            if (this.m_highlightedNode != null) {
-                this.m_highlightedNode.classList.remove("inspector-highlight");
-                this.m_highlightedNode = null;
-            }
-            if (this.m_inspectorTooltipNode != null) {
-                this.m_inspectorTooltipNode.remove();
-            }
-
+            g_modDebugMgr.ClearInspectorHighlights();
             if (highlightClicked) return;
-            if (g_modDebugMgr.m_debugPanel.style.display === "none") return;
             if (document.getElementById("DebugPanel").contains(ev.target)) return;
 
-            this.m_highlightedNode = ev.target;
-            this.m_highlightedNode.classList.add("inspector-highlight");
+            g_modDebugMgr.m_highlightedNode = ev.target;
+            g_modDebugMgr.m_highlightedNode.classList.add("inspector-highlight");
 
-            this.m_inspectorTooltipNode = document.createElement("div");
-            this.m_inspectorTooltipNode.classList.add("inspector-tooltip");
-            this.m_inspectorTooltipNode.innerHTML = `ID: <i>${this.m_highlightedNode.id}</i><br/>`;
-            this.m_inspectorTooltipNode.innerHTML += `class: <i>${this.m_highlightedNode.className}</i><br/>`;
+            g_modDebugMgr.m_inspectorTooltipNode = document.createElement("div");
+            g_modDebugMgr.m_inspectorTooltipNode.classList.add("inspector-tooltip");
+            g_modDebugMgr.m_inspectorTooltipNode.innerHTML = `ID: <i>${g_modDebugMgr.m_highlightedNode.id}</i><br/>`;
+            g_modDebugMgr.m_inspectorTooltipNode.innerHTML += `class: <i>${g_modDebugMgr.m_highlightedNode.className}</i><br/>`;
 
             // get style
             let elStyle = ev.target.style;
-            let computedStyle = window.getComputedStyle(this.m_highlightedNode, null);
+            let computedStyle = window.getComputedStyle(g_modDebugMgr.m_highlightedNode, null);
 
             let whiteList = ["width", "height", "color", "background-color", "position", "top", "left", "margin", "padding"];
             for (let i = whiteList.length; i--;) {
                 let prop = whiteList[i];
-                this.m_inspectorTooltipNode.innerHTML += "  " + prop + " = '<i>" + computedStyle[prop] + "</i>'<br />";
+                g_modDebugMgr.m_inspectorTooltipNode.innerHTML += "  " + prop + " = '<i>" + computedStyle[prop] + "</i>'<br />";
             }
 
-            document.body.appendChild(this.m_inspectorTooltipNode);
+            document.body.appendChild(g_modDebugMgr.m_inspectorTooltipNode);
 
             // set pos
             let bodyhalf = document.body.offsetHeight / 2;
-            let rect = this.m_highlightedNode.getBoundingClientRect();
-            let offset = this.m_highlightedNode.offsetHeight + 6;
+            let rect = g_modDebugMgr.m_highlightedNode.getBoundingClientRect();
+            let offset = g_modDebugMgr.m_highlightedNode.offsetHeight + 6;
             if (rect.top > bodyhalf) {
-                offset = -(this.m_inspectorTooltipNode.offsetHeight) - 6;
+                offset = -(g_modDebugMgr.m_inspectorTooltipNode.offsetHeight) - 6;
             }
-            this.m_inspectorTooltipNode.style.top = (rect.top + offset) + "px";
-            this.m_inspectorTooltipNode.style.left = Math.max(0, rect.left) + "px";
+            g_modDebugMgr.m_inspectorTooltipNode.style.top = (rect.top + offset) + "px";
+            g_modDebugMgr.m_inspectorTooltipNode.style.left = Math.max(0, rect.left) + "px";
 
             ev.preventDefault();
         });

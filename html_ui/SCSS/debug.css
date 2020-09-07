@@ -1,5 +1,6 @@
 /*! *****************************************************************************
     Author: dga711  in 2020
+    https://github.com/dga711/msfs-webui-devkit
 ***************************************************************************** */
 
 @font-face {
@@ -73,4 +74,8 @@
     pointer-events: none;
     font-size: 14px;
     padding: 8px;
+}
+
+.hidden {
+    display: none;
 }
