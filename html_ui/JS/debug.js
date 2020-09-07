@@ -106,7 +106,7 @@ class ModDebugMgr {
             this.m_canReload = false;
             clearTimeout(this.m_liveReloadTimer);
             delete e['returnValue'];
-          });
+        });
 
         window.addEventListener('load', (event) => {
             // css livereload (wait cause of weird lifecycle)
@@ -277,6 +277,7 @@ class ModDebugMgr {
             }
 
             if (highlightClicked) return;
+            if (g_modDebugMgr.m_debugPanel.style.display === "none") return;
             if (document.getElementById("DebugPanel").contains(ev.target)) return;
 
             this.m_highlightedNode = ev.target;
