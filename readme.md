@@ -6,6 +6,7 @@ The goal is to make the process of developing UIs in MSFS as painless as possibl
 
 ## Features
 * Hotreload HTML/CSS/JS changes without restarting the sim or flight
+* Livereloading of CSS changes
 * View console.log output in game
 * Action buttons
 * Basic HTML inspector
