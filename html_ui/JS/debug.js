@@ -109,7 +109,7 @@ class ModDebugMgr {
 
         window.addEventListener('load', (event) => {
             // css livereload (wait cause of weird lifecycle)
-            this.m_liveReloadTimer = setTimeout(this.LiveReloadCSS, 2000);
+            //this.m_liveReloadTimer = setTimeout(this.LiveReloadCSS, 2000);
         });
 
         this.m_canReload = true;
