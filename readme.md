@@ -4,7 +4,7 @@ This devkit is a mod and guidance for easier development of WebUI (Panels, MFD..
 
 The goal is to make the process of developing UIs in MSFS as painless as possible with more stuff to come.
 
-**The init code changed to be compatible with Patch 1.8.3 of MSFS, check the Usage section**
+**⚠️ The init code changed to be compatible with Patch 1.8.3 of MSFS, check the Usage section**
 
 ## Features
 * Hotreload HTML/CSS/JS changes without restarting the sim or flight
