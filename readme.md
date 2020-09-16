@@ -4,6 +4,8 @@ This devkit is a mod and guidance for easier development of WebUI (Panels, MFD..
 
 The goal is to make the process of developing UIs in MSFS as painless as possible with more stuff to come.
 
+**The init code changed to be compatible with Patch 1.8.3 of MSFS, check the Usage section**
+
 ## Features
 * Hotreload HTML/CSS/JS changes without restarting the sim or flight
 * Livereloading of CSS changes
@@ -35,9 +37,11 @@ _or_
 
 To show the debugging UI in the panel/mfd of your choice you should put this code into the corresponding JS file (_init()_ or end of _connectedcallback()_ method works well)
 ```        
-if (typeof g_modDebugMgr != "undefined") {
-    g_modDebugMgr.AddConsole(null);
-}
+Include.addScript("/JS/debug.js", function () {
+    if (typeof g_modDebugMgr != "undefined") {
+        g_modDebugMgr.AddConsole(null);
+    }
+});
 ```
 With the undefined-check in place you don't have to worry it will crash on people who don't have the DevKit in their installation.
 
