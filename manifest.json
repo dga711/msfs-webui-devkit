@@ -1,21 +1,16 @@
 {
-  "dependencies": [
-    {
-      "name": "asobo-vcockpits-core",
-      "package_version": "0.1.12"
-    }
-  ],
-  "content_type": "CORE",
-  "title": "webui devkit",
-  "manufacturer": "",
-  "creator": "dga711",
-  "package_version": "0.1.1",
-  "minimum_game_version": "1.7.12",
-  "release_notes": {
-    "neutral": {
-      "LastUpdate": "",
-      "OlderHistory": ""
-    }
-  },
-  "total_package_size": "0000000000000015657"
+    "content_type": "CUSTOM",
+    "manufacturer": "",
+    "dependencies": [],
+    "package_version": "0.8.0",
+    "minimum_game_version": "1.8.3",
+    "creator": "dga711",
+    "title": "web ui devkit",
+    "release_notes": {
+        "neutral": {
+            "LastUpdate": "",
+            "OlderHistory": ""
+        }
+    },
+    "total_package_size": "00000000000000212051"
 }

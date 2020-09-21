@@ -276,6 +276,8 @@ class ModDebugMgr {
             url.searchParams.set("version", (versionNum).toString());
             css.href = url.href;
         }
+
+        LiveReload.startAutoReload(false);
     }
 
     ClearInspectorHighlights() {
@@ -416,4 +418,3 @@ const fps = {
         return this.value;
     }
 }
-
