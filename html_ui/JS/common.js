@@ -235,7 +235,7 @@ var Include;
             if (!this.loadScriptAsync && this.scriptList.length > 0 && !this.scriptList[0].requested) {
                 let request = this.requestScript(this.scriptList[0]);
                 if (request) {
-                    var ignoreArr = ["Services", "dataStorage.js", "common.js", "ToolBar", "VFR", "map/svg", "templates", "simvar.js", "sortedlist.js", "avionics.js", "wasmsimcanvas.js", "inputs.js", "animation.js"];
+                    var ignoreArr = ["Services", "dataStorage.js", "common.js", "ToolBar", "VFR", "map/svg", "shared/map", "netbingmap", "templates", "simvar.js", "sortedlist.js", "avionics.js", "wasmsimcanvas.js", "inputs.js", "animation.js"];
 
                     function checkInput(input, words) {
                         return words.some(word => new RegExp(word, "i").test(input));
