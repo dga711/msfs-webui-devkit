@@ -235,7 +235,7 @@ var Include;
             if (!this.loadScriptAsync && this.scriptList.length > 0 && !this.scriptList[0].requested) {
                 let request = this.requestScript(this.scriptList[0]);
                 if (request) {
-                    var ignoreArr = ["Services", "dataStorage.js", "common.js", "ToolBar", "VFR", "map/svg", "shared/map", "netbingmap", "templates", "simvar.js", "sortedlist.js", "avionics.js", "wasmsimcanvas.js", "inputs.js", "animation.js"];
+                    var ignoreArr = ["Services", "dataStorage.js", "common.js", "ToolBar", "VFR", "map/svg", "templates", "simvar.js", "sortedlist.js", "avionics.js", "wasmsimcanvas.js", "inputs.js", "animation.js"];
 
                     function checkInput(input, words) {
                         return words.some(word => new RegExp(word, "i").test(input));
@@ -1416,9 +1416,11 @@ class UINavigation {
             }
         }
         if (!defaultButton) {
-            let selected = doc.querySelector(".selected, .Selected");
+            let selected = doc.querySelector(".selected:not(.disabled), .Selected:not(.disabled)");
             if (selected) {
                 defaultButton = UIElement.getUIElement(selected);
+                if (defaultButton && !defaultButton.canBeSelectedWithKeys())
+                    defaultButton = null;
             }
         }
         if (!defaultButton) {
@@ -1945,6 +1947,7 @@ class UIElement extends HTMLElement {
         return this.querySelector(selector);
     }
     setJSONData(data) { }
+    setAnyData(data) { }
     getKeyNavigationDirection() {
         if (this.hasAttribute("grid-navigation"))
             return KeyNavigationDirection.KeyNavigation_Grid;
@@ -2592,9 +2595,9 @@ class UIImageElement extends TemplateElement {
         this.m_src = "";
         this.m_transitionTime = 0.3;
         this.onImageLoaded = () => {
-            if (this.m_imageElement) {
+            if (this.m_mainElem) {
                 if (this.m_imageElement.complete) {
-                    this.m_imageElement.classList.remove("ImageLoading");
+                    this.m_mainElem.classList.remove("ImageLoading");
                     clearTimeout(this.m_timeout);
                     if (!this.transition) {
                         this.updateBackground();
@@ -2614,25 +2617,42 @@ class UIImageElement extends TemplateElement {
         this.updateBackground = () => {
             if (this.m_backBuffer && this.m_imageElement) {
                 this.m_backBuffer.src = this.m_imageElement.src;
+                this.m_backBufferElement.innerHTML = this.m_mainElem.innerHTML;
                 if (!this.transition)
                     this.m_backBuffer.classList.add("invisible");
             }
         };
     }
     get transition() { return !this.hasAttribute("no-transition"); }
+    LoadContentURL(srcImage, urlContent, contentTag, contentData) {
+        this.src = srcImage;
+        if (urlContent && urlContent != "") {
+            Include.addImport(urlContent, () => {
+                let container = document.createElement(contentTag);
+                this.m_mainContentElement.appendChild(container);
+                container.setAnyData(contentData);
+            });
+        }
+    }
+    clear() {
+        this.src = "";
+        this.m_backBuffer.src = "";
+        this.m_backBufferElement.innerHTML = this.m_mainElem.innerHTML;
+    }
     set src(_src) {
         if (this.m_src != _src) {
             this.m_src = _src;
-            if (this.m_imageElement) {
+            if (this.m_mainElem) {
                 if (this.transition)
-                    this.m_imageElement.classList.add("ImageLoading");
+                    this.m_mainElem.classList.add("ImageLoading");
+                Utils.RemoveAllChildren(this.m_mainContentElement);
                 if (_src != "")
                     this.m_imageElement.src = _src;
                 else {
                     this.m_imageElement.src = "";
                     this.m_backBuffer.src = "";
                 }
-                this.m_backBuffer.classList.remove("invisible");
+                this.m_backBufferElement.classList.remove("invisible");
             }
         }
     }
@@ -2649,22 +2669,31 @@ class UIImageElement extends TemplateElement {
         this.m_transitionTime = n;
     }
     connectedCallback() {
-        if (!this.m_backBuffer) {
+        if (!this.m_backBufferElement) {
+            this.m_mainElem = document.createElement("div");
+            this.m_mainElem.classList.add("MainElem");
             this.m_imageElement = document.createElement("img");
             this.m_imageElement.classList.add("MainImage");
-            this.insertBefore(this.m_imageElement, this.firstChild);
-            this.m_backBuffer = document.createElement("img");
-            this.m_backBuffer.classList.add("BackBuffer");
-            this.insertBefore(this.m_backBuffer, this.firstChild);
+            this.m_mainElem.appendChild(this.m_imageElement);
+            this.m_mainContentElement = document.createElement("div");
+            this.m_mainContentElement.classList.add("Content");
+            this.m_mainElem.appendChild(this.m_mainContentElement);
+            this.insertBefore(this.m_mainElem, this.firstChild);
             this.m_imageElement.addEventListener("load", this.onImageLoaded);
             this.m_imageElement.addEventListener("error", this.onImageError);
+            this.m_backBufferElement = document.createElement("div");
+            this.m_backBufferElement.classList.add("BackElem");
+            this.m_backBuffer = document.createElement("img");
+            this.m_backBuffer.classList.add("BackBuffer");
+            this.m_backBufferElement.appendChild(this.m_backBuffer);
+            this.insertBefore(this.m_backBufferElement, this.firstChild);
             if (this.getAttribute('src')) {
                 this.src = this.getAttribute('src');
             }
-            if (this.m_imageElement) {
-                this.m_imageElement.classList.add("ImageLoading");
+            if (this.m_mainElem) {
+                this.m_mainElem.classList.add("ImageLoading");
                 this.m_imageElement.src = this.m_src;
-                this.m_backBuffer.classList.remove("invisible");
+                this.m_backBufferElement.classList.remove("invisible");
             }
         }
     }
