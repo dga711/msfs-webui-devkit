@@ -212,6 +212,7 @@ var Include;
             scriptRequest.type = "text/javascript";
             scriptRequest.src = "coui://html_ui" + _def.path;
             scriptRequest.onload = this.onScriptLoaded.bind(this, _def);
+            scriptRequest.onerror = () => console.error("Couldn't load " + _def.path);
             _def.requested = true;
             return scriptRequest;
         }
