@@ -20,8 +20,8 @@ bDebugListeners = true;
 // Credits: some of this code and concepts is Asobo's and is modified by me
 class ModDebugMgr {
     constructor() {
-        this.m_defaultPosRight = 4;
-        this.m_defaultPosTop = 4;
+        this.m_defaultPosRight = 1;
+        this.m_defaultPosTop = 1;
         this.m_defaultLog = null;
         this.m_defaultWarn = null;
         this.m_defaultError = null;
