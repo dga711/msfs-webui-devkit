@@ -67,7 +67,7 @@ class ModDebugMgr {
         this.m_debugPanel.id = "DebugPanel";
         this.m_debugPanel.classList.add("debugPanel");
         // TODO this could be nicer
-        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <span id='deltatime'></span> <div id='debugActions' style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='toggleDbg'>-</button></div></div><div id='debugContent'></div>";
+        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <span id='deltatime'></span> <div id='debugActions' style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='clear'>C</button>&nbsp;<button id='toggleDbg'>-</button></div></div><div id='debugContent'></div>";
 
         document.body.appendChild(this.m_debugPanel);
         this.setDefaultPos(this.m_defaultPosRight, this.m_defaultPosTop);
@@ -80,6 +80,11 @@ class ModDebugMgr {
             if (g_modDebugMgr.m_canReload) {
                 window.document.location.reload(true);
                 clearTimeout(this.m_liveReloadTimer);
+            }
+        });
+        document.getElementById("clear").addEventListener("click", function () {
+            if(g_modDebugMgr.m_consoleElem){
+                g_modDebugMgr.m_consoleElem.textContent = "";
             }
         });
 
