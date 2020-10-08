@@ -412,7 +412,7 @@ const fps = {
 
         // iterate samples to obtain the average
         let average = 0;
-        for (i = 0; i < this._sample_.length; i++) average += this._sample_[i];
+        for (let i = 0; i < this._sample_.length; i++) average += this._sample_[i];
 
         average = Math.round(average / this._sample_.length);
 
