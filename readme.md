@@ -82,6 +82,7 @@ Pull requests and further information on the insides are welcome. For major chan
     <td align="center"><a href="https://github.com/dga711"><img src="https://avatars0.githubusercontent.com/u/2995606?v=4" width="80px;" alt=""/><br /><sub><b>dga711</b></sub></a><br /><a href="#ideas-naorunaoru" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/dga711/msfs-webui-devkit/commits?author=dga711" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Smirow"><img src="https://avatars1.githubusercontent.com/u/16503412?v=4" width="80px;" alt=""/><br /><sub><b>Smirow</b></sub></a><br /><a href="https://github.com/dga711/msfs-webui-devkit/issues?q=is%3Aissue+author%3ASmirow" title="Bug reports">🐛</a> <a href="https://github.com/dga711/msfs-webui-devkit/commits?author=Smirow" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/knighty"><img src="https://avatars3.githubusercontent.com/u/1693684?v=4" width="80px;" alt=""/><br /><sub><b>Knighty</b></sub></a><br /><a href="https://github.com/dga711/msfs-webui-devkit/commits?author=knighty" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/kaosfere"><img src="https://avatars3.githubusercontent.com/u/235912?v=4" width="80px;" alt=""/><br /><sub><b>kaosfere</b></sub></a><br /><a href="https://github.com/dga711/msfs-webui-devkit/commits?author=kaosfere" title="Code">💻</a></td>
   </tr>
 </table>
 
