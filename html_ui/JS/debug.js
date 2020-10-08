@@ -60,7 +60,11 @@ class ModDebugMgr {
             return;
         }
         this.AddCustomCss();
-        window.onerror = function (message, source, lineno, colno, error) { g_modDebugMgr.error(message); };
+        window.onerror = function (message, source, lineno, colno, error) {
+            let msg = 'Unhandled Exception: ' + message +
+                '\r\n' + error.stack;
+            console.error(msg);
+        };
 
         // create panel
         this.m_debugPanel = document.createElement("div");
@@ -83,7 +87,7 @@ class ModDebugMgr {
             }
         });
         document.getElementById("clear").addEventListener("click", function () {
-            if(g_modDebugMgr.m_consoleElem){
+            if (g_modDebugMgr.m_consoleElem) {
                 g_modDebugMgr.m_consoleElem.textContent = "";
             }
         });
@@ -127,7 +131,7 @@ class ModDebugMgr {
             document.getElementById("deltatime").innerHTML = fpsValue;
             requestAnimationFrame(updateLoop);
         }
-        requestAnimationFrame(updateLoop);
+            requestAnimationFrame(updateLoop);
     }
 
     LiveReloadCSS() {
