@@ -10,7 +10,7 @@ const DEBUG_ENABLED = true;
 // CONSOLE Invisible on start (show via hotkey ALT+T)
 const START_INVIS = false;
 // SHOW FPS counter
-const SHOW_FPS = true;
+const SHOW_FPS = false;
 
 // ! don't touch these !
 bLiveReload = true;

@@ -4,7 +4,7 @@ var bAutoReloadCSS = false;
 var bDebugListeners = true;
 var bDebugEnable = true;
 var g_externalVariables = {
-    animationsEnabled: true
+    animationsEnabled: true,
 };
 function GameConfiguration() {
     if (window.frameElement) {
@@ -12,10 +12,10 @@ function GameConfiguration() {
     }
     return window["gameConfig"];
 }
-function DEBUG() { return true; }
-function RELEASE() { return false; }
-function MASTER() { return false; }
-function SUBMISSION() { return false; }
+function DEBUG() { return GameConfiguration() === arguments.callee.name; }
+function RELEASE() { return GameConfiguration() === arguments.callee.name; }
+function MASTER() { return GameConfiguration() === arguments.callee.name; }
+function SUBMISSION() { return GameConfiguration() === arguments.callee.name; }
 var GAME_CONFIGURATION;
 (function (GAME_CONFIGURATION) {
     GAME_CONFIGURATION["DEBUG"] = "DEBUG";
@@ -58,8 +58,8 @@ function GetUIEditionMode() {
     }
     return window["UIEditionMode"];
 }
-function UI_USE_DATA_FOLDER() { return true; }
-function EDITION_MODE() { return false; }
+function UI_USE_DATA_FOLDER() { return window["UIUseDataFolder"] != null; }
+function EDITION_MODE() { return GetUIEditionMode() == "TRUE"; }
 class ImportTemplateElement extends HTMLElement {
     constructor() { super(); }
     connectedCallback() {
@@ -160,7 +160,6 @@ var Include;
             if (path[0] !== "/") {
                 path = IncludeMgr.AbsolutePath(window.location.pathname, path);
             }
-
             path = path.toLowerCase();
             let isInScripts = false;
             var scripts = document.head.getElementsByTagName("script");
@@ -651,11 +650,11 @@ var Utils;
         }
     }
     Utils.RemoveAllChildren = RemoveAllChildren;
-    function formatNumber(x) {
+    function formatNumber(x, _bInteger = false) {
         let str = x.toString();
         let g_localization = window.top["g_localization"];
         if (g_localization)
-            return g_localization.FormatNumberInString(str, false);
+            return g_localization.FormatNumberInString(str, _bInteger);
         return str.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
     Utils.formatNumber = formatNumber;
@@ -1289,21 +1288,21 @@ class UINavigation {
         Coherent.trigger("ASK_RELEASE_KEYS");
     }
     static set current(elem) {
-        if (UINavigation.current && UINavigation.current != elem) {
-            let parent = UINavigation.current.parentElement;
+        if (UINavigation.currentRaw && UINavigation.currentRaw != elem) {
+            let parent = UINavigation.currentRaw.parentElement;
             while (parent) {
                 let parentUI = UIElement.getUIElement(parent);
                 if (parentUI) {
-                    parentUI.onActiveChildBlurred(UINavigation.current);
+                    parentUI.onActiveChildBlurred(UINavigation.currentRaw);
                 }
                 parent = parent.parentElement;
             }
         }
         if (elem && !elem.canBeSelectedWithKeys())
             return;
-        let previous = UINavigation.current;
-        if (UINavigation.current)
-            UINavigation.previous = UINavigation.current;
+        let previous = UINavigation.currentRaw;
+        if (UINavigation.currentRaw)
+            UINavigation.previous = UINavigation.currentRaw;
         if (!isWindowEnabled()) {
             window.top["activeUIElement"] = null;
         }
@@ -1371,7 +1370,7 @@ class UINavigation {
         }
     }
     static onKeyDown(e) {
-        if (!UINavigation.current) {
+        if (!UINavigation.current && !UINavigation.m_mouseMode) {
             if ([KeyCode.KEY_LEFT, KeyCode.KEY_RIGHT, KeyCode.KEY_UP, KeyCode.KEY_DOWN].includes(e.keyCode)) {
                 UINavigation.enterKeysMode();
             }
@@ -1409,9 +1408,13 @@ class UINavigation {
                 if (uiElem) {
                     if (uiElem.canBeSelectedWithKeys()) {
                         defaultButton = uiElem;
+                        break;
                     }
                     else if (uiElem.getDefaultChildButton()) {
                         defaultButton = uiElem.getDefaultChildButton();
+                        if (defaultButton) {
+                            break;
+                        }
                     }
                 }
             }
@@ -1803,6 +1806,11 @@ class UIElement extends HTMLElement {
     }
     enable(bool) {
         this.classList.toggle("disabled", !bool);
+        if (UINavigation.currentRaw && !bool) {
+            if (UINavigation.currentRaw == this || UINavigation.currentRaw.isChildOf(this)) {
+                UINavigation.currentRaw.blur();
+            }
+        }
     }
     disable(bool) {
         this.enable(!bool);
@@ -1826,10 +1834,11 @@ class UIElement extends HTMLElement {
         return this.classList.contains("disabled");
     }
     canBeSelectedDisabled() { return false; }
+    canBeSelectedLocked() { return !this.hasAttribute('no-locked-navigation'); }
     canBeSelectedWithKeys() {
         if (this.getRootNode() != document)
             return false;
-        return !this.forceNoKeyNavigation && this.canBeSelected && this.isVisible() && !this.isOneParentHidden() && (this.canBeSelectedDisabled() || this.enabled);
+        return !this.forceNoKeyNavigation && this.canBeSelected && this.isVisible() && !this.isOneParentHidden() && (this.enabled || this.canBeSelectedDisabled()) && (!this.locked || this.canBeSelectedLocked());
     }
     get forceNoKeyNavigation() {
         return (this.hasAttribute("no-key-navigation"));
@@ -1852,6 +1861,11 @@ class UIElement extends HTMLElement {
             this.spreadToChildren(this, "locked", "parentLocked");
         else
             this.unspreadToChildren(this, "locked", "parentLocked");
+        if (UINavigation.currentRaw && !UINavigation.currentRaw.canBeSelectedLocked()) {
+            if (UINavigation.currentRaw == this || UINavigation.currentRaw.isChildOf(this)) {
+                UINavigation.currentRaw.blur();
+            }
+        }
     }
     get loading() {
         return this.classList.contains("activeLoading");
@@ -2015,7 +2029,12 @@ class UIElement extends HTMLElement {
     getDefaultButton() {
         if (this.canBeSelectedWithKeys())
             return this;
-        return this.getDefaultChildButton();
+        if (this.canBeSelected && !this.canBeSelectedWithKeys()) {
+            return null;
+        }
+        else {
+            return this.getDefaultChildButton();
+        }
     }
     getDefaultChildButton() {
         if (this.hasAttribute("default-child-button")) {
@@ -2092,7 +2111,7 @@ class UIElement extends HTMLElement {
                     if (!elem.canBeSelectedWithKeys) {
                         return false;
                     }
-                    if (!elem.canBeSelectedWithKeys() || elem.locked) {
+                    if (!elem.canBeSelectedWithKeys()) {
                         if (bDebugKeyNavigation)
                             console.warn("cannot be selected with keys", elem);
                         return false;
@@ -2466,15 +2485,26 @@ class UIMarquee extends UIElement {
         this.startScrollAnimation = () => {
             if (this.needsTooltip())
                 return;
-            if (this.m_animation && this.m_savedContentWidth === this.scrollWidth) {
-                this.m_animation.stop();
+            if (!this.noSizeCheck || !this.m_savedOffsetWidth) {
+                this.m_savedOffsetWidth = this.offsetWidth;
             }
-            else {
-                this.m_animation = this.scrollAnimation();
+            if (!this.noSizeCheck || !this.m_savedContentWidth) {
                 this.m_savedContentWidth = this.scrollWidth;
             }
-            if (this.offsetWidth < this.scrollWidth) {
-                this.m_animation.play();
+            if (this.m_animation && (this.noSizeCheck || this.m_savedContentWidth === this.scrollWidth)) {
+                this.m_animation.stop();
+                if (this.m_savedOffsetWidth < this.m_savedContentWidth) {
+                    this.m_animation.play();
+                }
+            }
+            else {
+                if (this.m_savedOffsetWidth < this.m_savedContentWidth) {
+                    this.m_animation = this.scrollAnimation();
+                    this.m_animation.play();
+                }
+                if (!this.noSizeCheck) {
+                    this.m_savedContentWidth = this.scrollWidth;
+                }
             }
         };
         this.stopScrollAnimation = () => {
@@ -2485,6 +2515,7 @@ class UIMarquee extends UIElement {
     }
     connectedCallback() {
         this.addEventListener('virtualScrollSizeUpdate', this.updateScrollAnimation);
+        this.m_savedOffsetWidth = this.offsetWidth;
         this.updateScrollAnimation();
         this.updateScrollBehaviour();
         window.addEventListener("updateExternal:showTooltips", this.updateScrollBehaviour);
@@ -2505,6 +2536,9 @@ class UIMarquee extends UIElement {
     static get observedAttributes() {
         return super.observedAttributes.concat(["manual"]);
     }
+    get noSizeCheck() {
+        return this.hasAttribute('no-size-check');
+    }
     get manual() {
         return this.hasAttribute('manual');
     }
@@ -2517,7 +2551,7 @@ class UIMarquee extends UIElement {
         }
     }
     scrollAnimation() {
-        let diff = this.scrollWidth - this.offsetWidth;
+        let diff = this.m_savedContentWidth - this.m_savedOffsetWidth;
         let tl = new UITimeline();
         let duration = 1550 + 16 * diff;
         if (diff == 0)
@@ -3589,7 +3623,7 @@ function OnInputFieldFocus(e) {
         OnInputFieldUnfocus(e);
     });
     if (!input.hasAttribute("custom-inputbar"))
-        Coherent.trigger("FOCUS_INPUT_FIELD", input.id);
+        Coherent.trigger("FOCUS_INPUT_FIELD", input.id, input.value);
 }
 function OnInputFieldUnfocus(e) {
     let input = e.target;
@@ -3685,6 +3719,8 @@ class SmartLoader {
         }
     }
     onInputRemoved(input) {
+        if (document.activeElement == input)
+            input.blur();
         if (input["inputFocusEventHandler"])
             input["inputFocusEventHandler"].clear();
         input.removeEventListener("focus", OnInputFieldFocus);
@@ -3851,10 +3887,10 @@ class Vec2 {
         this.x = _x;
         this.y = _y;
     }
-    static FromRect(elem) {
+    static FromRect(rect) {
         var ret = new Vec2();
-        ret.x = elem.left + elem.width * 0.5;
-        ret.y = elem.top + elem.height * 0.5;
+        ret.x = rect.left + rect.width * 0.5;
+        ret.y = rect.top + rect.height * 0.5;
         return ret;
     }
     static Delta(vec1, vec2) {
@@ -3863,19 +3899,18 @@ class Vec2 {
         ret.y = vec1.y - vec2.y;
         return ret;
     }
-    VectorTo(pt2) {
-        if (pt2)
-            return Vec2.Delta(pt2, this);
+    VectorTo(other) {
+        if (other)
+            return Vec2.Delta(other, this);
         else
             return new Vec2(0, 0);
     }
     toCurvePointString() {
         return `${this.x} ${this.y}`;
     }
-    Dot(b) {
-        return this.x * b.x + this.y * b.y;
+    Dot(other) {
+        return this.x * other.x + this.y * other.y;
     }
-    ;
     GetNorm() {
         return Math.sqrt(this.Dot(this));
     }
@@ -3894,11 +3929,14 @@ class Vec2 {
             this.y *= factor;
         }
     }
-    static SqrDistance(p1, p2) {
-        return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
+    SqrDistance(other) {
+        return (this.x - other.x) * (this.x - other.x) + (this.y - other.y) * (this.y - other.y);
     }
-    static Distance(p1, p2) {
-        return Math.sqrt(Vec2.SqrDistance(p1, p2));
+    Distance(other) {
+        return Math.sqrt(this.SqrDistance(other));
+    }
+    Equals(other) {
+        return (this.SqrDistance(other) < Number.EPSILON) ? true : false;
     }
 }
 class Vec3 {
@@ -4178,12 +4216,12 @@ var InputBar;
     var m_InputBarListener = null;
     var m_Registered = [];
     function setInputBar(id, params) {
+        m_Registered.push(id);
         if (m_InputBarListener && m_InputBarListener.connected) {
             Coherent.trigger("REGISTER_INPUT_BAR", id, window.location.pathname);
             Coherent.trigger("SET_INPUT_BAR", id, params, window.location.pathname);
         }
         else {
-            m_Registered.push(id);
             m_InputBarListener = RegisterViewListener("JS_LISTENER_INPUTBAR", function () {
                 Coherent.trigger("REGISTER_INPUT_BAR", id, window.location.pathname);
                 Coherent.trigger("SET_INPUT_BAR", id, params, window.location.pathname);
@@ -4277,7 +4315,9 @@ var PopUp;
         if (!Utils.inIframe()) {
             setBlockedByPopUp(true);
             if (type == "MODAL_POPUP") {
-                window.document.body.classList.add("greyed-notif");
+                if (!g_externalVariables.vrMode) {
+                    window.document.body.classList.add("greyed-notif");
+                }
             }
             else if (type == "COMMUNITY_PANEL") {
                 if (isWindowEnabled()) {
@@ -4292,7 +4332,9 @@ var PopUp;
     function OnPopUpHidden(type) {
         setBlockedByPopUp(false);
         if (type == "MODAL_POPUP") {
-            window.document.body.classList.remove("greyed-notif");
+            if (!g_externalVariables.vrMode) {
+                window.document.body.classList.remove("greyed-notif");
+            }
         }
         else if (type == "COMMUNITY_PANEL") {
             window.document.body.classList.remove("greyed-popup");
@@ -4402,6 +4444,9 @@ g_ComponentMgr.registerComponent("new-range-element", "/templates/OptionsMenu/Ra
 g_ComponentMgr.registerComponent("widget-header", "/templates/Widgets/WidgetHeader/WidgetHeader.html");
 g_ComponentMgr.registerComponent("progress-bar", "/templates/progressBar/progressBar.html");
 Coherent.on('UpdateGlobalVar', updateGlobalVar);
+Coherent.on("SwitchVRModeState", (state) => {
+    g_externalVariables.vrMode = state;
+});
 function updateGlobalVar(key, value) {
     g_externalVariables[key] = value;
     switch (key) {
@@ -4422,6 +4467,8 @@ function updateGlobalVar(key, value) {
             break;
         case 'uiScaling':
             updateUiScaling(value);
+            break;
+        case 'vrMode':
             break;
         default:
             console.warn('[GLOBAL VAR] Key unrecognized: ' + key);

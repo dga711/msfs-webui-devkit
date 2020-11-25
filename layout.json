@@ -2,18 +2,18 @@
     "content": [
         {
             "path": "html_ui/JS/common.js",
-            "size": 196985,
-            "date": 132458791843022022
+            "size": 193736,
+            "date": 132507702448535718
         },
         {
             "path": "html_ui/JS/debug.js",
-            "size": 15773,
-            "date": 132458791841161892
+            "size": 16147,
+            "date": 132495232594878788
         },
         {
             "path": "html_ui/SCSS/debug.css",
-            "size": 1500,
-            "date": 132452415518254852
+            "size": 1420,
+            "date": 132495232594888762
         }
     ]
 }
