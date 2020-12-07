@@ -203,6 +203,7 @@ var Include;
             }
             this.scriptList.push(def);
             if (request) {
+                this.cachebustRequest(request);
                 document.head.appendChild(request);
             }
         }
@@ -235,16 +236,7 @@ var Include;
             if (!this.loadScriptAsync && this.scriptList.length > 0 && !this.scriptList[0].requested) {
                 let request = this.requestScript(this.scriptList[0]);
                 if (request) {
-                    var ignoreArr = ["Services", "dataStorage.js", "common.js", "ToolBar", "VFR", "map/svg", "shared/map", "netbingmap", "templates", "simvar.js", "sortedlist.js", "avionics.js", "wasmsimcanvas.js", "inputs.js", "animation.js"];
-
-                    function checkInput(input, words) {
-                        return words.some(word => new RegExp(word, "i").test(input));
-                    }
-
-                    if (!checkInput(request.src, ignoreArr)) {
-                        let versionNum = Math.round(Math.random() * 10000000);
-                        request.src = request.src + "?cb=" + (versionNum.toString());
-                    }
+                    this.cachebustRequest(request);
                     document.head.appendChild(request);
                 }
             }
@@ -257,6 +249,19 @@ var Include;
                 }
             }
             return false;
+        }
+
+        cachebustRequest(req) {
+            var ignoreArr = ["Services", "dataStorage.js", "common.js", "ToolBar", "VFR", "map/svg", "shared/map", "netbingmap", "templates", "simvar.js", "sortedlist.js", "avionics.js", "wasmsimcanvas.js", "inputs.js", "animation.js"];
+
+            function checkInput(input, words) {
+                return words.some(word => new RegExp(word, "i").test(input));
+            }
+
+            if (!checkInput(req.src, ignoreArr)) {
+                let versionNum = Math.round(Math.random() * 10000000);
+                req.src = req.src + "?cb=" + (versionNum.toString());
+            }
         }
     }
     var g_IncludeMgr = new IncludeMgr();
