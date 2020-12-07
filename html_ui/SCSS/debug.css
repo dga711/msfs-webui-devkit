@@ -47,6 +47,7 @@
 #debugEval {
     height: 26px;
     padding: 4px;
+    margin-right:4px;
 }
 
 #debugActions {
