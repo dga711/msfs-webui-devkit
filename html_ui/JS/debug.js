@@ -11,6 +11,8 @@ const DEBUG_ENABLED = true;
 const START_INVIS = false;
 // SHOW FPS counter
 const SHOW_FPS = false;
+// ACTIVATE "INSPECTOR" (onclick element info)
+const USE_INSPECTOR = true;
 
 // ! don't touch these !
 bLiveReload = true;
@@ -108,7 +110,9 @@ class ModDebugMgr {
         }
 
         // ELEMENT inspector
-        this.ActivateInspector();
+        if (USE_INSPECTOR) {
+            this.ActivateInspector();
+        }
 
         window.addEventListener('beforeunload', function (e) {
             this.m_canReload = false;
@@ -131,7 +135,7 @@ class ModDebugMgr {
             document.getElementById("deltatime").innerHTML = fpsValue;
             requestAnimationFrame(updateLoop);
         }
-            requestAnimationFrame(updateLoop);
+        requestAnimationFrame(updateLoop);
     }
 
     LiveReloadCSS() {
@@ -348,9 +352,14 @@ class ModDebugMgr {
     }
 
 }
+
+Include.addScript("/JS/IncludeMgr.js", function () {
+});
+
 var g_modDebugMgr;
-if (DEBUG_ENABLED) {
+if (DEBUG_ENABLED && g_modDebugMgr === undefined) {
     g_modDebugMgr = new ModDebugMgr;
+    g_modDebugMgr.AddConsole(null);
 }
 
 class DragHandler {
