@@ -9,6 +9,7 @@ The goal is to make the process of developing UIs in MSFS as painless as possibl
 ## Features
 * Hotreload HTML/CSS/JS changes without restarting the sim or flight
 * View console.log output in game
+* Console input field to directly run JS commands
 * Action buttons
 * Basic HTML inspector
 * Panel FPS counter
@@ -16,11 +17,12 @@ The goal is to make the process of developing UIs in MSFS as painless as possibl
 * _[TODO] Load content from local webserver_
 * ...
 
-<img src="https://i.imgur.com/MuFmxRV.png" width="250" style="margin-left:30px">&nbsp;&nbsp;&nbsp;<img src="https://i.imgur.com/STaf5Yz.png" width="250" style="margin-left:30px"></img>&nbsp;&nbsp;&nbsp;<img src="https://i.imgur.com/UY4UhSR.png" width="250" style="margin-left:30px">
+<img src="https://i.imgur.com/YZdhMiA.gif" width="250" style="margin-left:30px">&nbsp;&nbsp;&nbsp;<img src="https://i.imgur.com/XC7l5mu.png" width="250" style="margin-left:30px"></img>&nbsp;&nbsp;&nbsp;<img src="https://i.imgur.com/DoIzpuK.png" width="250" style="margin-left:30px">
 
 ### Hotkeys
 * ALT + T = Show/Hide Panel
 * ALT + R = Reload page
+* ALT + X = Run JS command
 
 ## Installation
 
@@ -51,6 +53,7 @@ In game, on any panel where you activated the code, it should show an opaque UI 
 ![](https://i.imgur.com/gw90Lmk.png)
 
 Press on the "R" button to refresh the HTML Content of the panel.  
+Press on the "C" button to clear the console log.
 Press "X" to show the console output.
 
 **Important**: To be able to click on it on cockpit panels you have to bind the "New UI Window Mode" key in MsFs. Then press that key and click on a glass panel. It will pop out in a window.
@@ -58,7 +61,10 @@ Press "X" to show the console output.
 ### Part 3: Console Logging
 In the JS corresponding to the activated panel, any `console.log()` output should show up in the console panel in game.
 
-### Part 4: Action Buttons
+### Part 4: Console Input
+At the bottom of the debug panel is an input field. You can run JS commands here like ```console.log("test")``` and run them by clicking the "->" button or pressing ALT+X
+
+### Part 5: Action Buttons
 ```g_modDebugMgr.AddDebugButton("InsertTitleHere", function() {dosomething});```
 This will show a button in the open debug UI which executes the function when clicked.
 

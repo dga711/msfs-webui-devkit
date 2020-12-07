@@ -19,23 +19,13 @@
     font-size: 14px;
 }
 
-.scrollbar {
-    overflow: auto;
-    --sbback: transparent;
-    --barcolor: #3f3f3f;
-}
-
-.scrollbar:hover {
-    --barcolor: #3f3f3f;
-}
-
 #DebugPanel.collapsed {
     width: auto;
     opacity: 0.3;
 }
 
 .Console {
-    font-size: 12px;
+    font-size: 11px;
     font-family: "Consolas";
     min-height: 50px;
     padding: 4px;
@@ -45,8 +35,30 @@
 }
 
 #debugContent.collapsed {
-    display: none;
-    
+    display: none;    
+}
+
+#debugHeader {
+    vertical-align: middle;
+    height: 28px;
+    padding: 8px;
+}
+
+#debugEval {
+    height: 26px;
+    padding: 4px;
+}
+
+#debugActions {
+    margin-left: 10px;
+}
+
+#DebugPanel button {
+    width: 20px;
+    margin-top: -1px;
+    background-color: transparent;
+    border: solid 1px white;
+    color: white;
 }
 
 .debugButton {
@@ -56,23 +68,11 @@
     padding: 2px;
 }
 
-#debugHeader {
-    background-color: #282828;
-    vertical-align: middle;
-    height: 28px;
-    padding: 8px;
-}
-
-#debugActions {
-    margin-left: 10px;
-}
-
-#debugHeader button {
-    width: 20px;
-    margin-top: -1px;
-    background-color: transparent;
-    border: solid 1px white;
-    color: white;
+#evalCmdIn {
+    width: 90%;
+    height: 18px;
+    vertical-align: top;
+    font-size: 12px;
 }
 
 .inspector-highlight {
@@ -92,4 +92,14 @@
 
 .hidden {
     display: none;
+}
+
+.scrollbar {
+    overflow: auto;
+    --sbback: transparent;
+    --barcolor: #3f3f3f;
+}
+
+.scrollbar:hover {
+    --barcolor: #3f3f3f;
 }

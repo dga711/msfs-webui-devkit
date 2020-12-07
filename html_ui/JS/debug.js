@@ -13,6 +13,8 @@ const START_INVIS = false;
 const SHOW_FPS = false;
 // ACTIVATE "INSPECTOR" (onclick element info)
 const USE_INSPECTOR = true;
+// activate console input
+const USE_CON_INPUT = true;
 
 // ! don't touch these !
 bLiveReload = true;
@@ -73,7 +75,7 @@ class ModDebugMgr {
         this.m_debugPanel.id = "DebugPanel";
         this.m_debugPanel.classList.add("debugPanel");
         // TODO this could be nicer
-        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <span id='deltatime'></span> <div id='debugActions' style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='clear'>C</button>&nbsp;<button id='toggleDbg'>-</button></div></div><div id='debugContent'></div>";
+        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <span id='deltatime'></span> <div id='debugActions' style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='clear'>C</button>&nbsp;<button id='toggleDbg'>-</button></div></div><div id='debugContent'></div><div id='debugEval'><input id='evalCmdIn' type='text' /><button id='evalCmdBtn' style='float:right'>-></button></div>";
 
         document.body.appendChild(this.m_debugPanel);
         this.setDefaultPos(this.m_defaultPosRight, this.m_defaultPosTop);
@@ -93,6 +95,23 @@ class ModDebugMgr {
                 g_modDebugMgr.m_consoleElem.textContent = "";
             }
         });
+        if (USE_CON_INPUT) {
+            document.getElementById("evalCmdBtn").addEventListener("click", function () {
+                eval(document.getElementById("evalCmdIn").value);
+            });
+            document.getElementById("evalCmdIn").addEventListener("keydown", function (e) {
+                // Number 88 is the X key on the keyboard
+                if (e.altKey && e.keyCode === 88) {
+                    document.getElementById("evalCmdBtn").click();
+                    setTimeout(function () {
+                        document.getElementById("evalCmdIn").focus();
+                    }, 100);
+                    e.preventDefault();
+                }
+            });
+        }else {
+            document.getElementById("debugEval").style.display = "none";
+        }
 
         // collapse panel initially
         this.TogglePanelCollapsed();
@@ -167,10 +186,12 @@ class ModDebugMgr {
         if (panel.classList.contains("collapsed")) {
             document.getElementById("toggleDbg").innerHTML = "X";
             document.getElementById("clear").style.display = "none";
+            document.getElementById("debugEval").style.display = "none";
         }
         else {
             document.getElementById("toggleDbg").innerHTML = "-";
             document.getElementById("clear").style.display = "";
+            document.getElementById("debugEval").style.display = "";
         }
     }
 
