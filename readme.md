@@ -4,7 +4,7 @@ This devkit is a mod and guidance for easier development of WebUI (Panels, MFD..
 
 The goal is to make the process of developing UIs in MSFS as painless as possible with more stuff to come.
 
-**⚠️ The init code changed to be compatible with Patch 1.8.3 of MSFS, check the Usage section**
+### **⚠️ The init code changed with version 0.9.0, check the Usage section**
 
 ## Features
 * Hotreload HTML/CSS/JS changes without restarting the sim or flight
@@ -25,7 +25,7 @@ The goal is to make the process of developing UIs in MSFS as painless as possibl
 ## Installation
 
 * Download the latest zip release [here](https://github.com/dga711/msfs-webui-devkit/releases).
-* Extract the "WebUi-Devkit" folder to the _community_ folder in your MSFS installation  
+* Extract the "msfs-webui-devkit" folder to the _community_ folder in your MSFS installation  
 _or_  
 * Clone the repo into your _community_ folder
 
@@ -34,18 +34,17 @@ _or_
 
 ### Part 1: The code
 
-To show the debugging UI in the panel/mfd of your choice you should put this code into the corresponding JS file (_init()_ or end of _connectedcallback()_ method works well)
+### **⚠️ This changed with version 0.9.0. Get rid of the former initialization code and follow the instructions below**
+
+To show the debugging UI in the panel/mfd of your choice you should put this code into the corresponding HTML file of the instrument or page.
+
+**⚠️ It must come after the script-tag for _common.js_**
 ```        
-Include.addScript("/JS/debug.js", function () {
-        g_modDebugMgr.AddConsole(null);
-});
+<script type="text/javascript" src="/JS/debug.js"></script>
 ```
-With the undefined-check in place you don't have to worry it will crash on people who don't have the DevKit in their installation.
+<img src="https://i.imgur.com/92KI7bM.png" width="350">
 
-**Note**: It does matter where you put the initialization. Mostly dependent on inheritance of the classes. So maybe you have to try to find the right spot for your init code.
-
-**Tip**: To show the UI on all screens on all planes, put the code in the _connectedCallback()_ method of the _NavSystem_ class in the _NavSystems.js_
-
+**Tip**: To show the UI on all screens on all planes, put the script tag into _VCockpit.html_
 ### Part 2: The ingame UI
 In game, on any panel where you activated the code, it should show an opaque UI Element in the top right corner.
 
