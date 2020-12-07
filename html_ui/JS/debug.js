@@ -164,10 +164,14 @@ class ModDebugMgr {
         let panel = document.getElementById("debugContent");
         panel.classList.toggle("collapsed");
         document.getElementById("DebugPanel").classList.toggle("collapsed");
-        if (panel.classList.contains("collapsed"))
+        if (panel.classList.contains("collapsed")) {
             document.getElementById("toggleDbg").innerHTML = "X";
-        else
+            document.getElementById("clear").style.display = "none";
+        }
+        else {
             document.getElementById("toggleDbg").innerHTML = "-";
+            document.getElementById("clear").style.display = "";
+        }
     }
 
     IsPanelCollapsed() {

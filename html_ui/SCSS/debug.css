@@ -11,12 +11,22 @@
 }
 
 #DebugPanel {
-    background-color: cornflowerblue;
+    background-color: #282828;
     opacity: 0.8;
     width: 40%;
     min-height: 32px;
     height: auto;
     font-size: 14px;
+}
+
+.scrollbar {
+    overflow: auto;
+    --sbback: transparent;
+    --barcolor: #3f3f3f;
+}
+
+.scrollbar:hover {
+    --barcolor: #3f3f3f;
 }
 
 #DebugPanel.collapsed {
@@ -25,7 +35,7 @@
 }
 
 .Console {
-    font-size: 13px;
+    font-size: 12px;
     font-family: "Consolas";
     min-height: 50px;
     padding: 4px;
@@ -36,6 +46,7 @@
 
 #debugContent.collapsed {
     display: none;
+    
 }
 
 .debugButton {
@@ -46,7 +57,7 @@
 }
 
 #debugHeader {
-    background-color: cornflowerblue;
+    background-color: #282828;
     vertical-align: middle;
     height: 28px;
     padding: 8px;
@@ -59,6 +70,9 @@
 #debugHeader button {
     width: 20px;
     margin-top: -1px;
+    background-color: transparent;
+    border: solid 1px white;
+    color: white;
 }
 
 .inspector-highlight {
@@ -68,8 +82,8 @@
 .inspector-tooltip {
     position: absolute;
     display: block;
-    background-color: pink;
-    color: black;
+    background-color: #190061;
+    color: white;
     z-index: 120000;
     pointer-events: none;
     font-size: 14px;
