@@ -46,7 +46,7 @@ To show the debugging UI in the panel/mfd of your choice you should put this cod
 ```
 <img src="https://i.imgur.com/92KI7bM.png" width="350">
 
-**Tip**: To show the UI on all screens on all planes, put the script tag into _VCockpit.html_
+**Tip**: To show the UI on all screens on all planes, put the script tag into _Official\OneStore\asobo-vcockpits-core\html_ui\Pages\VCockpit\Core\VCockpit.html_
 ### Part 2: The ingame UI
 In game, on any panel where you activated the code, it should show an opaque UI Element in the top right corner.
 
