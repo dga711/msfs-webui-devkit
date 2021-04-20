@@ -11,6 +11,7 @@
 }
 
 #DebugPanel {
+    transform: rotateX(0);
     background-color: #282828;
     opacity: 0.8;
     width: 40%;

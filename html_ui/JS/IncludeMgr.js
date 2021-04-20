@@ -50,7 +50,11 @@ var Include;
             }
             var link = document.createElement("link");
             link.rel = "import";
-            link.href = path;
+
+            // cachebust
+            let versionNum = Math.round(Math.random() * 10000000);
+            link.href = path + "?cb=" + (versionNum.toString());
+            // link.href = path;
             loader.addResource(path);
             if (callback) {
                 this.resourceLoadedCallbacks.push(callback);
@@ -172,7 +176,7 @@ var Include;
         }
 
         cachebustRequest(req) {
-            var ignoreArr = ["Services", "dataStorage.js", "common.js", "ToolBar", "VFR", "map/svg", "shared/map", "netbingmap", "templates", "simvar.js", "sortedlist.js", "avionics.js", "wasmsimcanvas.js", "inputs.js", "animation.js"];
+            var ignoreArr = ["Services", "dataStorage.js", "common.js", "ToolBar", "VFR", "netbingmap", "simvar.js", "sortedlist.js", "avionics.js", "wasmsimcanvas.js", "inputs.js", "animation.js"];
 
             function checkInput(input, words) {
                 return words.some(word => new RegExp(word, "i").test(input));

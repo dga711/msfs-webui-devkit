@@ -12,7 +12,7 @@ const START_INVIS = false;
 // SHOW FPS counter
 const SHOW_FPS = false;
 // ACTIVATE "INSPECTOR" (onclick element info)
-const USE_INSPECTOR = true;
+const USE_INSPECTOR = false;
 // activate console input
 const USE_CON_INPUT = true;
 
@@ -75,7 +75,7 @@ class ModDebugMgr {
         this.m_debugPanel.id = "DebugPanel";
         this.m_debugPanel.classList.add("debugPanel");
         // TODO this could be nicer
-        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <span id='deltatime'></span> <div id='debugActions' style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='clear'>C</button>&nbsp;<button id='toggleDbg'>-</button></div></div><div id='debugContent'></div><div id='debugEval'><input id='evalCmdIn' type='text' /><button id='evalCmdBtn' style='float:right'>-></button></div>";
+        this.m_debugPanel.innerHTML = "<div id='debugHeader'>Debug <span id='deltatime'></span> <div id='debugActions' style='float:right'><button id='rfrsh'>R</button>&nbsp;<button id='rfrshcss'>S</button>&nbsp;<button id='clear'>C</button>&nbsp;<button id='toggleDbg'>-</button></div></div><div id='debugContent'></div><div id='debugEval'><input id='evalCmdIn' type='text' /><button id='evalCmdBtn' style='float:right'>-></button></div>";
 
         document.body.appendChild(this.m_debugPanel);
         this.setDefaultPos(this.m_defaultPosRight, this.m_defaultPosTop);
@@ -88,6 +88,11 @@ class ModDebugMgr {
             if (g_modDebugMgr.m_canReload) {
                 window.document.location.reload(true);
                 clearTimeout(this.m_liveReloadTimer);
+            }
+        });
+        document.getElementById("rfrshcss").addEventListener("click", function () {
+            if (g_modDebugMgr.m_canReload) {
+                g_modDebugMgr.LiveReloadCSS();
             }
         });
         document.getElementById("clear").addEventListener("click", function () {
@@ -141,7 +146,7 @@ class ModDebugMgr {
 
         window.addEventListener('load', (event) => {
             // css livereload (wait cause of weird lifecycle)
-            //this.m_liveReloadTimer = setTimeout(this.LiveReloadCSS, 2000);
+            this.m_liveReloadTimer = setTimeout(this.LiveReloadCSS, 1000);
         });
 
         this.m_canReload = true;
@@ -158,10 +163,11 @@ class ModDebugMgr {
     }
 
     LiveReloadCSS() {
-        this.m_canReload = false;
-        LiveReload.reloadCSS();
-        this.m_liveReloadTimer = setTimeout(g_modDebugMgr.LiveReloadCSS, 3000);
-        this.m_canReload = true;
+        // this.m_canReload = false;
+        // LiveReload.reloadCSS();
+        // this.m_liveReloadTimer = setTimeout(g_modDebugMgr.LiveReloadCSS, 3000);
+        // this.m_canReload = true;
+        LiveReload.startAutoReload(false);
     }
 
     BindHotKeys() {
