@@ -52,9 +52,9 @@ In game, on any panel where you activated the code, it should show an opaque UI 
 
 ![](https://i.imgur.com/gw90Lmk.png)
 
-Press on the "R" button to refresh the HTML Content of the panel. 
-Press on the "S" button to just refresh the CSS without reloading the page.
-Press on the "C" button to clear the console log.
+Press on the "R" button to refresh the HTML Content of the panel.  
+Press on the "S" button to just refresh the CSS without reloading the page.  
+Press on the "C" button to clear the console log.  
 Press "X" to show the console output.
 
 **Important**: To be able to click on it on cockpit panels you have to bind the "New UI Window Mode" key in MsFs. Then press that key and click on a glass panel. It will pop out in a window.
