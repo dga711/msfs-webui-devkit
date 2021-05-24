@@ -14,7 +14,7 @@ const SHOW_FPS = false;
 // ACTIVATE "INSPECTOR" (onclick element info)
 const USE_INSPECTOR = false;
 // activate console input
-const USE_CON_INPUT = true;
+const USE_CON_INPUT = false;
 
 // ! don't touch these !
 bLiveReload = true;
