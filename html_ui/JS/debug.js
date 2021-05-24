@@ -119,7 +119,16 @@ class ModDebugMgr {
         }
 
         // collapse panel initially
-        this.TogglePanelCollapsed();
+        if (sessionStorage.getItem("dbgpanel_collapsed") != null) {
+            const collapsed = sessionStorage.getItem("dbgpanel_collapsed");
+            if(collapsed === "true" && !panel.classList.contains("collapsed")){
+                this.TogglePanelCollapsed();
+            } else if(collapsed === "false" && panel.classList.contains("collapsed")){
+                this.TogglePanelCollapsed();
+            }
+        }else {
+            this.TogglePanelCollapsed();
+        }
         // Window DragHandler 
         this.dragHandler = new DragHandler(this.m_debugPanel, "debugHeader")
         // hotkeys
@@ -190,11 +199,13 @@ class ModDebugMgr {
         panel.classList.toggle("collapsed");
         document.getElementById("DebugPanel").classList.toggle("collapsed");
         if (panel.classList.contains("collapsed")) {
+            sessionStorage.setItem("dbgpanel_collapsed", "true");
             document.getElementById("toggleDbg").innerHTML = "X";
             document.getElementById("clear").style.display = "none";
             document.getElementById("debugEval").style.display = "none";
         }
         else {
+            sessionStorage.setItem("dbgpanel_collapsed", "false");
             document.getElementById("toggleDbg").innerHTML = "-";
             document.getElementById("clear").style.display = "";
             document.getElementById("debugEval").style.display = "";
