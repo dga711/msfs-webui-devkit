@@ -114,7 +114,7 @@ class ModDebugMgr {
                     e.preventDefault();
                 }
             });
-        }else {
+        } else {
             document.getElementById("debugEval").style.display = "none";
         }
 
@@ -294,8 +294,14 @@ class ModDebugMgr {
         this.m_defaultPosRight = right;
         this.m_defaultPosTop = top;
         if (this.m_debugPanel) {
-            this.m_debugPanel.style.top = this.m_defaultPosTop + "%";
-            this.m_debugPanel.style.right = this.m_defaultPosRight + "%";
+            if (sessionStorage.getItem("dbgpanel_posx") !== null) {
+                this.m_debugPanel.style.top = sessionStorage.getItem("dbgpanel_posy");
+                this.m_debugPanel.style.right = sessionStorage.getItem("dbgpanel_posx");
+            } else {
+                this.m_debugPanel.style.top = this.m_defaultPosTop + "%";
+                this.m_debugPanel.style.right = this.m_defaultPosRight + "%";
+            }
+
         }
     }
 
@@ -384,9 +390,6 @@ class ModDebugMgr {
 
 }
 
-Include.addScript("/JS/IncludeMgr.js", function () {
-});
-
 var g_modDebugMgr;
 if (DEBUG_ENABLED && g_modDebugMgr === undefined) {
     g_modDebugMgr = new ModDebugMgr;
@@ -423,6 +426,9 @@ class DragHandler {
         this.element.style.right = (offsetRight + this.pos[0]) + "px";
 
         this.stopListening();
+
+        sessionStorage.setItem("dbgpanel_posx", this.element.style.right);
+        sessionStorage.setItem("dbgpanel_posy", this.element.style.top);
     }
 
     stopListening() {

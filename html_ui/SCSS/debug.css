@@ -11,7 +11,7 @@
 }
 
 #DebugPanel {
-    transform: rotateX(0);
+    -webkit-transform: rotateX(0deg);
     background-color: #282828;
     opacity: 0.8;
     width: 40%;
@@ -25,7 +25,7 @@
     opacity: 0.3;
 }
 
-.Console {
+#DebugPanel .Console {
     font-size: 11px;
     font-family: "Consolas";
     min-height: 50px;
@@ -63,14 +63,14 @@
     color: white;
 }
 
-.debugButton {
+#DebugPanel .debugButton {
     font-size: 14px;
     font-weight: bold;
     text-align: center;
     padding: 2px;
 }
 
-#evalCmdIn {
+#DebugPanel #evalCmdIn {
     width: 90%;
     height: 18px;
     vertical-align: top;
@@ -92,16 +92,16 @@
     padding: 8px;
 }
 
-.hidden {
+#DebugPanel .hidden {
     display: none;
 }
 
-.scrollbar {
+#DebugPanel .scrollbar {
     overflow: auto;
     --sbback: transparent;
     --barcolor: #3f3f3f;
 }
 
-.scrollbar:hover {
+#DebugPanel .scrollbar:hover {
     --barcolor: #3f3f3f;
 }
