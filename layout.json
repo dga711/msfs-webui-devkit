@@ -2,18 +2,13 @@
     "content": [
         {
             "path": "html_ui/JS/debug.js",
-            "size": 17734,
-            "date": 132633932910937992
-        },
-        {
-            "path": "html_ui/JS/IncludeMgr.js",
-            "size": 9094,
-            "date": 132580242173278082
+            "size": 18956,
+            "date": 132663668623181024
         },
         {
             "path": "html_ui/SCSS/debug.css",
-            "size": 1795,
-            "date": 132525165626778796
+            "size": 1878,
+            "date": 132663643561239632
         }
     ]
 }

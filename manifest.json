@@ -2,7 +2,7 @@
     "content_type": "CUSTOM",
     "manufacturer": "",
     "dependencies": [],
-    "package_version": "0.9.1",
+    "package_version": "0.9.2",
     "minimum_game_version": "1.9.2",
     "creator": "dga711",
     "title": "web ui devkit",
@@ -12,5 +12,5 @@
             "OlderHistory": ""
         }
     },
-    "total_package_size": "00000000000000028623"
+    "total_package_size": "00000000000000020834"
 }
